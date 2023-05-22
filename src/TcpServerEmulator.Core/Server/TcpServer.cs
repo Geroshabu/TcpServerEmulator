@@ -123,11 +123,11 @@ namespace TcpServerEmulator.Core.Server
 
                         var data = new Span<byte>(buffer, 0, size).ToArray();
 
-                        dataLogger.Log($"> {{{string.Join(",", data)}}}");
+                        dataLogger.Log($"> {convertMessage(data)}");
 
                         var res = dataHandler.HandleData(data);
 
-                        dataLogger.Log($"< {{{string.Join(",", res)}}}");
+                        dataLogger.Log($"< {convertMessage(res)}");
 
                         await stream.WriteAsync(res, cancelToken).ConfigureAwait(false);
                     }
@@ -143,6 +143,13 @@ namespace TcpServerEmulator.Core.Server
             {
                 listener.Stop();
             }
+        }
+
+        private string convertMessage(byte[] data)
+        {
+            var text = System.Text.Encoding.ASCII.GetString(data);
+            var characters = text.Select(c => char.IsControl(c) ? "0x" + Convert.ToByte(c).ToString() : c.ToString());
+            return $"{{{string.Join(",", data)}}} 【{string.Join(",", characters)}】";
         }
     }
 }
