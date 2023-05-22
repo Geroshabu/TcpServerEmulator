@@ -11,14 +11,19 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Left">
             <StackPanel Orientation="Horizontal">
+                <Label Content="Port: "
+                       Margin="5"/>
                 <TextBox Text="{Binding Port}"
+                         VerticalContentAlignment="Center"
                          Width="100"
                          Margin="5"/>
                 <Button Content="接続"
                         Command="{Binding ConnectCommand}"
+                        Width="80"
                         Margin="5"/>
                 <Button Content="切断"
                         Command="{Binding DisconnectCommand}"
+                        Width="80"
                         Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -53,6 +58,7 @@
         </StackPanel>
         <TextBox Text="{Binding CommunicationHistory, Mode=OneWay}"
                  IsReadOnly="True"
+                 HorizontalScrollBarVisibility="Auto"
                  Margin="5"/>
     </DockPanel>
 </Window>
