@@ -1,0 +1,58 @@
+﻿<Window x:Class="TcpServerEmulator.MainWindow.View"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:local="clr-namespace:TcpServerEmulator.MainWindow"
+        mc:Ignorable="d"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="TcpServerEmulator" Height="450" Width="800">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Left">
+            <StackPanel Orientation="Horizontal">
+                <TextBox Text="{Binding Port}"
+                         Width="100"
+                         Margin="5"/>
+                <Button Content="接続"
+                        Command="{Binding ConnectCommand}"
+                        Margin="5"/>
+                <Button Content="切断"
+                        Command="{Binding DisconnectCommand}"
+                        Margin="5"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <ComboBox ItemsSource="{Binding RuleGenerators}"
+                          SelectedItem="{Binding SelectedRuleGenerator}"
+                          DisplayMemberPath="Name"
+                          Margin="5"/>
+                <Button Content="追加"
+                        Command="{Binding AddRuleCommand}"
+                        CommandParameter="{Binding SelectedRuleGenerator}"
+                        Width="80"
+                        Margin="5"/>
+                <Button Content="削除"
+                        Command="{Binding RemoveRuleCommand}"
+                        CommandParameter="{Binding SelectedRule}"
+                        Width="80"
+                        Margin="5"/>
+            </StackPanel>
+            <ListView ItemsSource="{Binding RuleItems}"
+                      SelectedIndex="{Binding SelectedRuleIndex}"
+                      MinWidth="500"
+                      Margin="5">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="名前"
+                                        DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="説明"
+                                        DisplayMemberBinding="{Binding Description}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
+        <TextBox Text="{Binding CommunicationHistory, Mode=OneWay}"
+                 IsReadOnly="True"
+                 Margin="5"/>
+    </DockPanel>
+</Window>

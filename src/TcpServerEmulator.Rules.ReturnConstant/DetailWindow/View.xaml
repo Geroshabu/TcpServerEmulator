@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="TcpServerEmulator.Rules.ReturnConstant.DetailWindow.View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:local="clr-namespace:TcpServerEmulator.Rules.ReturnConstant.DetailWindow"
+             mc:Ignorable="d" 
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="450" d:DesignWidth="800"
+             MinWidth="600">
+    <StackPanel>
+        <TextBlock Text="「受け取るデータ」に対して、「返却するデータ」を返します。"
+                   Margin="5"/>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="名前:"
+                   Margin="5"/>
+            <TextBox Text="{Binding Name}"
+                     VerticalContentAlignment="Center"
+                     Width="500"
+                     Margin="5"/>
+        </StackPanel>
+        <Label Content="受け取るデータ(byte配列)(カンマ区切り):"
+               Margin="5,10,5,0"/>
+        <TextBox Text="{Binding ReceiveDataText}"
+                 Height="50"
+                 TextWrapping="Wrap"
+                 Margin="5"/>
+        <Label Content="返却するデータ(byte配列)(カンマ区切り):"
+               Margin="5,10,5,0"/>
+        <TextBox Text="{Binding ResponseDataText}"
+                 Height="50"
+                 TextWrapping="Wrap"
+                 Margin="5"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="True"
+                    Width="80"
+                    Margin="5"/>
+            <Button Content="Cancel"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="False"
+                    Width="80"
+                    Margin="5"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

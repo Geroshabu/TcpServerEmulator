@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator", "TcpServerEmulator\TcpServerEmulator.csproj", "{377200BE-97E4-442A-9E1B-820A24F47C42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Core", "TcpServerEmulator.Core\TcpServerEmulator.Core.csproj", "{FD833AB5-21CF-4A36-B18A-6998671CDCE1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Rules", "TcpServerEmulator.Rules\TcpServerEmulator.Rules.csproj", "{66C6C779-1F89-44E3-8F1C-9CE894EABFB4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Rules.ReturnConstant", "TcpServerEmulator.Rules.ReturnConstant\TcpServerEmulator.Rules.ReturnConstant.csproj", "{78B1B22A-C428-4880-B4A6-81810829F390}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerEmulator.Logger", "TcpServerEmulator.Logger\TcpServerEmulator.Logger.csproj", "{1AEF658E-7594-4A7A-BC20-2BD316725257}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerEmulator.Logger.OnMemory", "TcpServerEmulator.Logger.OnMemory\TcpServerEmulator.Logger.OnMemory.csproj", "{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{377200BE-97E4-442A-9E1B-820A24F47C42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{377200BE-97E4-442A-9E1B-820A24F47C42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{377200BE-97E4-442A-9E1B-820A24F47C42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{377200BE-97E4-442A-9E1B-820A24F47C42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD833AB5-21CF-4A36-B18A-6998671CDCE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD833AB5-21CF-4A36-B18A-6998671CDCE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD833AB5-21CF-4A36-B18A-6998671CDCE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD833AB5-21CF-4A36-B18A-6998671CDCE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66C6C779-1F89-44E3-8F1C-9CE894EABFB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66C6C779-1F89-44E3-8F1C-9CE894EABFB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66C6C779-1F89-44E3-8F1C-9CE894EABFB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66C6C779-1F89-44E3-8F1C-9CE894EABFB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78B1B22A-C428-4880-B4A6-81810829F390}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78B1B22A-C428-4880-B4A6-81810829F390}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78B1B22A-C428-4880-B4A6-81810829F390}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78B1B22A-C428-4880-B4A6-81810829F390}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AEF658E-7594-4A7A-BC20-2BD316725257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AEF658E-7594-4A7A-BC20-2BD316725257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AEF658E-7594-4A7A-BC20-2BD316725257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AEF658E-7594-4A7A-BC20-2BD316725257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8CAE7E4F-E9E9-489F-9EDD-6500AF5263A1}
+	EndGlobalSection
+EndGlobal

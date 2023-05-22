@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ModulesPath>$(ProjectDir)..\bin\Modules\</ModulesPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TcpServerEmulator.Rules\TcpServerEmulator.Rules.csproj" />
+  </ItemGroup>
+
+  <Target Name="DeleteCopiedFiles" AfterTargets="Clean">
+    <ItemGroup>
+      <FilesToDelete Include="$(ModulesPath)$(TargetName).dll;$(ModulesPath)$(TargetName).pdb" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  
+  <Target Name="CopyBuildOutput" AfterTargets="Build">
+    <ItemGroup>
+      <SourceFiles Include="$(OutDir)$(TargetName).dll;$(OutDir)$(TargetName).pdb" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(ModulesPath)" />
+  </Target>
+
+</Project>
