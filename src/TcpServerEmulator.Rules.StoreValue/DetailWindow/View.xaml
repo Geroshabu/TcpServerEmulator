@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="TcpServerEmulator.Rules.StoreValue.DetailWindow.View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TcpServerEmulator.Rules.StoreValue.DetailWindow"
+             xmlns:prism="http://prismlibrary.com/"
+             mc:Ignorable="d"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="600" d:DesignWidth="800">
+    <StackPanel>
+        <TextBlock Text="設定コマンドで値を設定し、取得コマンドで値を取得します。"
+                   Margin="5"/>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="名前:"
+                   Margin="5"/>
+            <TextBox Text="{Binding Name}"
+                     VerticalContentAlignment="Center"
+                     Width="500"
+                     Margin="5"/>
+        </StackPanel>
+        <GroupBox Header="設定コマンド"
+                  Margin="5">
+            <StackPanel>
+                <Label Content="設定コマンドで受け取るデータ(byte配列)(カンマ区切り):"
+                       Margin="5,0"/>
+                <Label Content="保持する部分は「*N」で指定します。Nはバイト数です。例:「104,111,*4,103,101,13,10」"
+                       Margin="5,0"/>
+                <TextBox Text="{Binding SetterReceiveDataText}"
+                         Height="36"
+                         TextWrapping="Wrap"
+                         Margin="5"/>
+                <Label Content="設定コマンドで返却するデータ(byte配列)(カンマ区切り):"
+                       Margin="5,0"/>
+                <TextBox Text="{Binding SetterResponseDataText}"
+                         Height="36"
+                         TextWrapping="Wrap"
+                         Margin="5"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="取得コマンド">
+            <StackPanel>
+                <Label Content="取得コマンドで受け取るデータ(byte配列)(カンマ区切り):"
+                       Margin="5,0"/>
+                <TextBox Text="{Binding GetterReceiveDataText}"
+                         Height="36"
+                         TextWrapping="Wrap"
+                         Margin="5"/>
+                <Label Content="取得コマンドで返却するデータ(byte配列)(カンマ区切り):"
+                       Margin="5,0"/>
+                <Label Content="値を埋め込む部分は「*」で指定します。「*」は保持するデータと同じ長さです。例:「104,111,*,103,101,13,10」"
+                       Margin="5,0"/>
+                <TextBox Text="{Binding GetterResponseDataText}"
+                         Height="36"
+                         TextWrapping="Wrap"
+                         Margin="5"/>
+            </StackPanel>
+        </GroupBox>
+        <DockPanel>
+            <Label DockPanel.Dock="Left"
+                   Content="初期値(複数入力時は改行):"
+                   VerticalAlignment="Center"
+                   Margin="5"/>
+            <TextBox Text="{Binding InitialValuesText}"
+                     Height="72"
+                     TextWrapping="Wrap"
+                     Margin="5"/>
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="True"
+                    Width="80"
+                    Margin="5"/>
+            <Button Content="Cancel"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="False"
+                    Width="80"
+                    Margin="5"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

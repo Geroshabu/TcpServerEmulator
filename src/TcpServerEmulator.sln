@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Rules", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Rules.ReturnConstant", "TcpServerEmulator.Rules.ReturnConstant\TcpServerEmulator.Rules.ReturnConstant.csproj", "{78B1B22A-C428-4880-B4A6-81810829F390}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerEmulator.Logger", "TcpServerEmulator.Logger\TcpServerEmulator.Logger.csproj", "{1AEF658E-7594-4A7A-BC20-2BD316725257}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Logger", "TcpServerEmulator.Logger\TcpServerEmulator.Logger.csproj", "{1AEF658E-7594-4A7A-BC20-2BD316725257}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerEmulator.Logger.OnMemory", "TcpServerEmulator.Logger.OnMemory\TcpServerEmulator.Logger.OnMemory.csproj", "{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Logger.OnMemory", "TcpServerEmulator.Logger.OnMemory\TcpServerEmulator.Logger.OnMemory.csproj", "{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerEmulator.Rules.StoreValue", "TcpServerEmulator.Rules.StoreValue\TcpServerEmulator.Rules.StoreValue.csproj", "{6697C999-0D12-4564-9ABF-8BEAEAE6B175}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6697C999-0D12-4564-9ABF-8BEAEAE6B175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6697C999-0D12-4564-9ABF-8BEAEAE6B175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6697C999-0D12-4564-9ABF-8BEAEAE6B175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6697C999-0D12-4564-9ABF-8BEAEAE6B175}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
