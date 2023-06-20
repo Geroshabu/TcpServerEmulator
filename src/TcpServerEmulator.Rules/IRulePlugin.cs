@@ -1,9 +1,9 @@
 ﻿namespace TcpServerEmulator.Rules
 {
     /// <summary>
-    /// ルール生成者
+    /// ルールに関するプラグインを表すインターフェイス
     /// </summary>
-    public interface IRuleGenerator
+    public interface IRulePlugin
     {
         /// <summary>
         /// 生成するルールの種類名

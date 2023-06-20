@@ -27,13 +27,13 @@
                         Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <ComboBox ItemsSource="{Binding RuleGenerators}"
-                          SelectedItem="{Binding SelectedRuleGenerator}"
+                <ComboBox ItemsSource="{Binding RulePlugins}"
+                          SelectedItem="{Binding SelectedRulePlugin}"
                           DisplayMemberPath="Name"
                           Margin="5"/>
                 <Button Content="追加"
                         Command="{Binding AddRuleCommand}"
-                        CommandParameter="{Binding SelectedRuleGenerator}"
+                        CommandParameter="{Binding SelectedRulePlugin}"
                         Width="80"
                         Margin="5"/>
                 <Button Content="削除"

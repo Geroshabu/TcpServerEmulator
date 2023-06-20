@@ -12,7 +12,7 @@ namespace TcpServerEmulator.MainWindow
 {
     internal class ViewModel : BindableBase
     {
-        private readonly RuleGeneratorHolder ruleGeneratorHolder;
+        private readonly RulePluginHolder ruleGeneratorHolder;
         private readonly RuleHolder ruleHolder;
         private readonly TcpServer server;
         private readonly Logger.OnMemory.Logger logger;
@@ -39,19 +39,19 @@ namespace TcpServerEmulator.MainWindow
         }
 
         /// <summary>
-        /// ルールジェネレータの選択肢
+        /// ルールのプラグインの選択肢
         /// </summary>
-        public ObservableCollection<IRuleGenerator> RuleGenerators { get; }
+        public ObservableCollection<IRulePlugin> RulePlugins { get; }
 
-        private IRuleGenerator? selectedRuleGenerator;
+        private IRulePlugin? selectedRulePlugin;
         /// <summary>
-        /// 現在選択されているルールジェネレータ。
-        /// まだルールジェネレータが一つも読み込まれていないされていない場合はnull。
+        /// 現在選択されているルールのプラグイン。
+        /// まだルールプラグインが一つも読み込まれていないされていない場合はnull。
         /// </summary>
-        public IRuleGenerator? SelectedRuleGenerator
+        public IRulePlugin? SelectedRulePlugin
         {
-            get => selectedRuleGenerator;
-            set => SetProperty(ref selectedRuleGenerator, value);
+            get => selectedRulePlugin;
+            set => SetProperty(ref selectedRulePlugin, value);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace TcpServerEmulator.MainWindow
         public string CommunicationHistory => logger.JoinedMessage;
 
         public ViewModel(
-            RuleGeneratorHolder ruleGeneratorHolder,
+            RulePluginHolder ruleGeneratorHolder,
             RuleHolder ruleHolder,
             TcpServer server,
             Logger.OnMemory.Logger logger,
@@ -84,23 +84,23 @@ namespace TcpServerEmulator.MainWindow
             AddRuleCommand = addRuleCommand;
             //RemoveRuleCommand = removeRuleCommand;
 
-            RuleGenerators = new ObservableCollection<IRuleGenerator>(ruleGeneratorHolder.Generators);
+            RulePlugins = new ObservableCollection<IRulePlugin>(ruleGeneratorHolder.Plugins);
             RuleItems = new ObservableCollection<RuleItemViewModel>(
                 ruleHolder.Rules.Select(rule => new RuleItemViewModel(rule)));
-            SelectedRuleGenerator = RuleGenerators.FirstOrDefault();
+            SelectedRulePlugin = RulePlugins.FirstOrDefault();
 
-            this.ruleGeneratorHolder.GeneratorRegistered += handleGeneratorRegistered;
+            this.ruleGeneratorHolder.Registered += handlePluginRegistered;
             this.ruleHolder.RuleAdded += (_, e) => RuleItems.Add(new RuleItemViewModel(e.NewRule));
             this.ruleHolder.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
             this.logger.MessageAdded += (_, _) => RaisePropertyChanged(nameof(CommunicationHistory));
         }
 
-        private void handleGeneratorRegistered(object? sender, RuleGeneratorRegisteredEventArgs e)
+        private void handlePluginRegistered(object? sender, RulePluginRegisteredEventArgs e)
         {
-            RuleGenerators.Add(e.NewRuleGenerator);
-            if (RuleGenerators.Count == 1)
+            RulePlugins.Add(e.NewRulePlugin);
+            if (RulePlugins.Count == 1)
             {
-                SelectedRuleGenerator = RuleGenerators[0];
+                SelectedRulePlugin = RulePlugins[0];
             }
         }
     }

@@ -29,9 +29,9 @@ namespace TcpServerEmulator.MainWindow.Commands
         /// <inheritdoc cref="ICommand.Execute(object?)"/>
         public void Execute(object? parameter)
         {
-            if (parameter is IRuleGenerator ruleGenerator)
+            if (parameter is IRulePlugin plugin)
             {
-                dialogService.ShowDialog(ruleGenerator.EditWindowName, result =>
+                dialogService.ShowDialog(plugin.EditWindowName, result =>
                 {
                     if (result.Result == ButtonResult.OK &&
                         result.Parameters.TryGetValue("Rule", out IRule rule))

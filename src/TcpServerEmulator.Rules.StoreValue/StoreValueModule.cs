@@ -9,15 +9,15 @@ namespace TcpServerEmulator.Rules.StoreValue
         /// <inheritdoc cref="IModule.OnInitialized(IContainerProvider)"/>
         public void OnInitialized(IContainerProvider containerProvider)
         {
-            var ruleRegister = containerProvider.Resolve<IRuleGeneratorRegister>();
-            var rule = containerProvider.Resolve<RuleGenerator>();
+            var ruleRegister = containerProvider.Resolve<IRulePluginRegister>();
+            var rule = containerProvider.Resolve<Plugin>();
             ruleRegister.Register(rule);
         }
 
         /// <inheritdoc cref="IModule.RegisterTypes(IContainerRegistry)"/>
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.Register<RuleGenerator>();
+            containerRegistry.Register<Plugin>();
 
             containerRegistry.RegisterDialog<View, ViewModel>(typeof(View).FullName);
         }

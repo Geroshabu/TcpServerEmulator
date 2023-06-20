@@ -21,9 +21,9 @@ namespace TcpServerEmulator
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.Register<View>();
-            containerRegistry.RegisterManySingleton<RuleGeneratorHolder>(
-                typeof(RuleGeneratorHolder),
-                typeof(IRuleGeneratorRegister));
+            containerRegistry.RegisterManySingleton<RulePluginHolder>(
+                typeof(RulePluginHolder),
+                typeof(IRulePluginRegister));
             containerRegistry.RegisterSingleton<RuleHolder>();
             containerRegistry.Register<ConnectCommand>();
             containerRegistry.Register<DisconnectCommand>();
