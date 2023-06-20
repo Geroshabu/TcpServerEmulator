@@ -71,15 +71,11 @@ namespace TcpServerEmulator.Rules.ReturnConstant
             }
         }
 
-        /// <summary>
-        /// このルールが機能するのに必要な条件を満たしているか
-        /// </summary>
+        /// <inheritdoc cref="IRule.IsValid"/>
         [MemberNotNullWhen(true, nameof(receiveDataMatch), nameof(responseDataMatch))]
         public bool IsValid => receiveDataMatch != null && responseDataMatch != null;
 
-        /// <summary>
-        /// <see cref="IsValid"/>の値に影響のある変更がされた場合に発生する
-        /// </summary>
+        /// <inheritdoc cref="IRule.IsValidChanged"/>
         public event EventHandler? IsValidChanged;
 
         /// <inheritdoc cref="IRule.Description"/>
