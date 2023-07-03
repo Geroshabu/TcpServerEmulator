@@ -14,5 +14,11 @@
         /// 編集ウインドウ名
         /// </summary>
         string EditWindowName { get; }
+
+        /// <summary>
+        /// 新しいルールのインスタンスを作成する
+        /// </summary>
+        /// <returns>新しいルールのインスタンス</returns>
+        IRule CreateInitialRule();
     }
 }

@@ -13,8 +13,7 @@ namespace TcpServerEmulator.Rules.ReturnConstant
         /// <inheritdoc cref="IRulePlugin.EditWindowName"/>
         public string EditWindowName => typeof(View).FullName!;
 
-        public Plugin()
-        {
-        }
+        /// <inheritdoc cref="IRulePlugin.CreateInitialRule"/>
+        public IRule CreateInitialRule() => new Rule();
     }
 }
