@@ -31,10 +31,16 @@ namespace TcpServerEmulator.MainWindow.Commands
         {
             if (parameter is IRulePlugin plugin)
             {
-                dialogService.ShowDialog(plugin.EditWindowName, result =>
+                var initialRule = plugin.CreateInitialRule();
+                var dialogParameters = new DialogParameters
+                {
+                    { nameof(IRule), initialRule }
+                };
+
+                dialogService.ShowDialog(plugin.EditWindowName, dialogParameters, result =>
                 {
                     if (result.Result == ButtonResult.OK &&
-                        result.Parameters.TryGetValue("Rule", out IRule rule))
+                        result.Parameters.TryGetValue(nameof(IRule), out IRule rule))
                     {
                         ruleHolder.AddRule(rule);
                     }
