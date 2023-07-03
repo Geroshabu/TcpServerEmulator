@@ -1,4 +1,4 @@
-﻿using System.Windows;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -8,61 +8,108 @@ namespace TcpServerEmulator.Rules.ReturnConstant.DetailWindow
 {
     internal class ViewModel : BindableBase, IDialogAware
     {
+        private Rule? _model = null;
+        [DisallowNull]
+        private Rule? model
+        {
+            get => _model;
+            set
+            {
+                _model = value;
+                RaisePropertyChanged(nameof(canExecuteOk));
+            }
+        }
+
+        /// <summary>この ViewModel が、操作の対象となるモデルを持っているか否か</summary>
+        [MemberNotNullWhen(true, nameof(model), nameof(_model))]
+        public bool HasModel => model != null;
+
+        [MemberNotNull(nameof(model), nameof(_model))]
+        private void assertHasModel()
+        {
+            if (!HasModel)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
         /// <inheritdoc cref="IDialogAware.Title"/>
         public string Title => "定数返却ルールの編集";
 
-        private DelegateCommand<string>? closeDialogCommand;
-        /// <summary>OKまたはCancelでダイアログを閉じるときのコマンド</summary>
-        public ICommand CloseDialogCommand =>
-            closeDialogCommand ?? (closeDialogCommand = new DelegateCommand<string>(parameter =>
-        {
-            ButtonResult result = ButtonResult.None;
-
-            var dialogParameter = new DialogParameters();
-
-            if (parameter?.ToLower() == "true")
+        private DelegateCommand? okCommand;
+        /// <summary>OKボタンのコマンド</summary>
+        public ICommand OkCommand =>
+            okCommand ?? (okCommand = new DelegateCommand(() =>
             {
-                result = ButtonResult.OK;
-
-
-                if (!ReceiveDataText.Split(',').All(num => byte.TryParse(num, out _)) ||
-                    !ResponseDataText.Split(',').All(num => byte.TryParse(num, out _)))
+                if (HasModel)
                 {
-                    MessageBox.Show("入力データがbyte[]に変換できません。");
-                    return;
+                    var dialogParameter = new DialogParameters
+                    {
+                        { nameof(IRule), model }
+                    };
+                    RaiseRequestClose(new DialogResult(ButtonResult.OK, dialogParameter));
                 }
-                dialogParameter.Add("Rule", new Rule(Name, ReceiveDataText, ResponseDataText));
-                result = ButtonResult.OK;
-            }
-            else if (parameter?.ToLower() == "false")
-            {
-                result = ButtonResult.Cancel;
-            }
+            })
+            .ObservesCanExecute(() => canExecuteOk));
 
-            RaiseRequestClose(new DialogResult(result, dialogParameter));
-        }));
+        private bool canExecuteOk => HasModel && model.IsValid;
+
+        private void handleIsValidChanged(object? sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(canExecuteOk));
+        }
+
+        private DelegateCommand? cancelCommand;
+        /// <summary>キャンセルボタンのコマンド</summary>
+        public ICommand CancelCommand =>
+            cancelCommand ?? (cancelCommand = new DelegateCommand(() =>
+            {
+                RaiseRequestClose(new DialogResult(ButtonResult.Cancel));
+            }));
 
         /// <inheritdoc cref="IDialogAware.RequestClose"/>
         public event Action<IDialogResult>? RequestClose;
 
         /// <summary>ユーザーが入力した「受け取るデータ」</summary>
-        public string ReceiveDataText { get; set; } = string.Empty;
+        /// <exception cref="InvalidOperationException">
+        ///   この ViewModel が操作対象となるモデルを持っていない場合にアクセスされたとき。
+        ///   <seealso cref="HasModel"/>
+        /// </exception>
+        public string ReceiveDataText
+        {
+            get => model?.ReceiveDataText ?? throw new InvalidOperationException();
+            set
+            {
+                assertHasModel();
+                model.ReceiveDataText = value;
+            }
+        }
 
         /// <summary>ユーザーが入力した「返却するデータ」</summary>
-        public string ResponseDataText { get; set; } = string.Empty;
-
-        public string Name { get; set; } = string.Empty;
-
-        protected virtual void CloseDialog(string parameter)
+        /// <exception cref="InvalidOperationException">
+        ///   この ViewModel が操作対象となるモデルを持っていない場合にアクセスされたとき。
+        ///   <seealso cref="HasModel"/>
+        /// </exception>
+        public string ResponseDataText
         {
-            ButtonResult result = ButtonResult.None;
+            get => model?.ResponseDataText ?? throw new InvalidOperationException();
+            set
+            {
+                assertHasModel();
+                model.ResponseDataText = value;
+            }
+        }
 
-            if (parameter?.ToLower() == "true")
-                result = ButtonResult.OK;
-            else if (parameter?.ToLower() == "false")
-                result = ButtonResult.Cancel;
-
-            RaiseRequestClose(new DialogResult(result));
+        public string Name
+        {
+            get => model?.Name ?? string.Empty;
+            set
+            {
+                if (HasModel)
+                {
+                    model.Name = value;
+                }
+            }
         }
 
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
@@ -76,11 +123,20 @@ namespace TcpServerEmulator.Rules.ReturnConstant.DetailWindow
         /// <inheritdoc cref="IDialogAware.OnDialogClosed"/>
         public void OnDialogClosed()
         {
+            if (HasModel)
+            {
+                model.IsValidChanged -= handleIsValidChanged;
+            }
         }
 
         /// <inheritdoc cref="IDialogAware.OnDialogOpened(IDialogParameters)"/>
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            if (parameters.TryGetValue<Rule>(nameof(IRule), out var rule))
+            {
+                model = rule;
+                model.IsValidChanged += handleIsValidChanged;
+            }
         }
     }
 }
