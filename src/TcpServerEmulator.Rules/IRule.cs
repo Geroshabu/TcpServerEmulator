@@ -17,6 +17,9 @@
         /// <param name="receivedData">受け取ったデータ</param>
         /// <returns>受け取ったデータに対する応答データ</returns>
         /// <remarks><see cref="CanResponse(byte[])"/>が<c>true</c>の場合のみ呼ばれる</remarks>
+        /// <exception cref="InvalidOperationException">
+        ///   <see cref="CanResponse(byte[])"/>が<c>false</c>を返すような状態で呼ばれた
+        /// </exception>
         byte[] GetResponse(byte[] receivedData);
     }
 }

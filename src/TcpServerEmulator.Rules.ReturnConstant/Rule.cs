@@ -1,4 +1,7 @@
-﻿namespace TcpServerEmulator.Rules.ReturnConstant
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+
+namespace TcpServerEmulator.Rules.ReturnConstant
 {
     /// <summary>
     /// 受け取った値に対して、固定値を応答するルール
@@ -6,58 +9,105 @@
     internal class Rule : IRule
     {
         /// <inheritdoc cref="IRule.Name"/>
-        public string Name { get; }
+        public string Name { get; set; } = string.Empty;
 
-        /// <summary>受け取ったデータ</summary>
-        public byte[] ReceiveData { get; }
+        private string receiveDataText = string.Empty;
+        /// <summary>受け取るデータとしてユーザが入力した文字列</summary>
+        public string ReceiveDataText
+        {
+            get => receiveDataText;
+            set
+            {
+                receiveDataText = value;
+                if (value.Split(',').All(num => byte.TryParse(num, out _)))
+                {
+                    receiveDataMatch = value.Split(',').Select(byte.Parse).ToArray();
+                }
+                else
+                {
+                    receiveDataMatch = null;
+                }
+            }
+        }
 
-        /// <summary>返却するデータ</summary>
-        public byte[] ResponseData { get; }
+        private string responseDataText = string.Empty;
+        /// <summary>返却するデータとしてユーザが入力した文字列</summary>
+        public string ResponseDataText
+        {
+            get => responseDataText;
+            set
+            {
+                responseDataText = value;
+                if (value.Split(',').All(num => byte.TryParse(num, out _)))
+                {
+                    responseDataMatch = value.Split(',').Select(byte.Parse).ToArray();
+                }
+                else
+                {
+                    responseDataMatch = null;
+                }
+            }
+        }
+
+        private byte[]? _receiveDataMatch = null;
+        private byte[]? receiveDataMatch
+        {
+            get => _receiveDataMatch;
+            set
+            {
+                _receiveDataMatch = value;
+                IsValidChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private byte[]? _responseDataMatch = null;
+        private byte[]? responseDataMatch
+        {
+            get => _responseDataMatch;
+            set
+            {
+                _responseDataMatch = value;
+                IsValidChanged?.Invoke(this,EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// このルールが機能するのに必要な条件を満たしているか
+        /// </summary>
+        [MemberNotNullWhen(true, nameof(receiveDataMatch), nameof(responseDataMatch))]
+        public bool IsValid => receiveDataMatch != null && responseDataMatch != null;
+
+        /// <summary>
+        /// <see cref="IsValid"/>の値に影響のある変更がされた場合に発生する
+        /// </summary>
+        public event EventHandler? IsValidChanged;
 
         /// <inheritdoc cref="IRule.Description"/>
         public string Description
         {
             get
             {
-                return "{" + string.Join(',', ReceiveData.Take(10))
-                    + (ReceiveData.Length > 10 ? "..." : string.Empty) + "}に対し{"
-                    + string.Join(',', ResponseData.Take(10))
-                    + (ResponseData.Length > 10 ? "..." : string.Empty) + "}を返します。";
+                if (!IsValid)
+                {
+                    return string.Empty;
+                }
+                return "{" + string.Join(',', receiveDataMatch.Take(10))
+                    + (receiveDataMatch.Length > 10 ? "..." : string.Empty) + "}に対し{"
+                    + string.Join(',', responseDataMatch.Take(10))
+                    + (responseDataMatch.Length > 10 ? "..." : string.Empty) + "}を返します。";
             }
-        }
-
-        public Rule(
-            string name,
-            string receiveData,
-            string responseData)
-        {
-            Name = name;
-
-            var receiveDataTexts = receiveData.Split(',');
-            if (!receiveDataTexts.All(num => byte.TryParse(num, out _)))
-            {
-                throw new ArgumentException($"parameter {receiveData} can not parse into byte array", nameof(receiveData));
-            }
-            ReceiveData = receiveDataTexts.Select(byte.Parse).ToArray();
-
-            var responseDataTexts = responseData.Split(',');
-            if (!responseDataTexts.All(num => byte.TryParse(num, out _)))
-            {
-                throw new ArgumentException($"parameter {responseData} can not parse into byte array", nameof(responseData));
-            }
-            ResponseData = responseDataTexts.Select(byte.Parse).ToArray();
         }
 
         /// <inheritdoc cref="IRule.CanResponse(byte[])"/>
         public bool CanResponse(byte[] receivedData)
         {
-            return ReceiveData.SequenceEqual(receivedData);
+            return IsValid && receiveDataMatch.SequenceEqual(receivedData);
         }
 
         /// <inheritdoc cref="IRule.GetResponse(byte[])"/>
         public byte[] GetResponse(byte[] receivedData)
         {
-            return ResponseData;
+            return IsValid ? responseDataMatch : throw new InvalidOperationException();
         }
     }
 }
