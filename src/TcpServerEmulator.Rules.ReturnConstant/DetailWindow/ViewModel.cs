@@ -41,14 +41,13 @@ namespace TcpServerEmulator.Rules.ReturnConstant.DetailWindow
         public ICommand OkCommand =>
             okCommand ?? (okCommand = new DelegateCommand(() =>
             {
-                if (HasModel)
-                {
-                    var dialogParameter = new DialogParameters
+                assertHasModel();
+
+                var dialogParameter = new DialogParameters
                     {
                         { nameof(IRule), model }
                     };
-                    RaiseRequestClose(new DialogResult(ButtonResult.OK, dialogParameter));
-                }
+                RaiseRequestClose(new DialogResult(ButtonResult.OK, dialogParameter));
             })
             .ObservesCanExecute(() => canExecuteOk));
 
@@ -72,12 +71,12 @@ namespace TcpServerEmulator.Rules.ReturnConstant.DetailWindow
 
         /// <summary>ユーザーが入力した「受け取るデータ」</summary>
         /// <exception cref="InvalidOperationException">
-        ///   この ViewModel が操作対象となるモデルを持っていない場合にアクセスされたとき。
+        ///   この ViewModel が操作対象となるモデルを持っていない場合に設定しようとしたとき。
         ///   <seealso cref="HasModel"/>
         /// </exception>
         public string ReceiveDataText
         {
-            get => model?.ReceiveDataText ?? throw new InvalidOperationException();
+            get => model?.ReceiveDataText ?? string.Empty;
             set
             {
                 assertHasModel();
@@ -87,12 +86,12 @@ namespace TcpServerEmulator.Rules.ReturnConstant.DetailWindow
 
         /// <summary>ユーザーが入力した「返却するデータ」</summary>
         /// <exception cref="InvalidOperationException">
-        ///   この ViewModel が操作対象となるモデルを持っていない場合にアクセスされたとき。
+        ///   この ViewModel が操作対象となるモデルを持っていない場合に設定しようとしたとき。
         ///   <seealso cref="HasModel"/>
         /// </exception>
         public string ResponseDataText
         {
-            get => model?.ResponseDataText ?? throw new InvalidOperationException();
+            get => model?.ResponseDataText ?? string.Empty;
             set
             {
                 assertHasModel();
