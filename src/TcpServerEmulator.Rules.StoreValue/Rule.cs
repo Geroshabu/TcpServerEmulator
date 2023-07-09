@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace TcpServerEmulator.Rules.StoreValue
 {
@@ -14,87 +9,240 @@ namespace TcpServerEmulator.Rules.StoreValue
     internal class Rule : IRule
     {
         /// <inheritdoc cref="IRule.Name"/>
-        public string Name { get; }
+        public string Name { get; set; } = string.Empty;
 
+        private string setterReceiveDataText = string.Empty;
         /// <summary>設定コマンドで受け取るデータとしてユーザが入力した文字列</summary>
-        public string SetterReceiveDataText { get; }
+        public string SetterReceiveDataText
+        {
+            get => setterReceiveDataText;
+            set
+            {
+                setterReceiveDataText = value;
+                reevaluateStoringValue(value, GetterResponseDataText, InitialValuesText);
+            }
+        }
 
+        private string setterResponseDataText = string.Empty;
         /// <summary>設定コマンドで返却するデータとしてユーザが入力した文字列</summary>
-        public string SetterResponseDataText { get; }
+        public string SetterResponseDataText
+        {
+            get => setterResponseDataText;
+            set
+            {
+                setterResponseDataText = value;
+                if (tryParseByteArray(value, out var bytes))
+                {
+                    setterResponseAsByte = bytes;
+                }
+                else
+                {
+                    setterResponseAsByte = null;
+                }
+            }
+        }
 
+        private string getterReceiveDataText = string.Empty;
         /// <summary>取得コマンドで受け取るデータとしてユーザが入力した文字列</summary>
-        public string GetterReceiveDataText { get; }
+        public string GetterReceiveDataText
+        {
+            get => getterReceiveDataText;
+            set
+            {
+                getterReceiveDataText = value;
+                if (tryParseByteArray(value, out var bytes))
+                {
+                    getterReceiveAsByte = bytes;
+                }
+                else
+                {
+                    getterReceiveAsByte = null;
+                }
+            }
+        }
 
+        private string getterResponseDataText = string.Empty;
         /// <summary>取得コマンドで返却するデータとしてユーザが入力した文字列</summary>
-        public string GetterResponseDataText { get; }
+        public string GetterResponseDataText
+        {
+            get => getterResponseDataText;
+            set
+            {
+                getterResponseDataText = value;
+                reevaluateStoringValue(SetterReceiveDataText, value, InitialValuesText);
+            }
+        }
 
+        private string initialValuesText = string.Empty;
         /// <summary>保持する値の初期値としてユーザが入力した文字列</summary>
-        public string[] InitialValues { get; }
+        public string InitialValuesText
+        {
+            get => initialValuesText;
+            set
+            {
+                initialValuesText = value;
+                reevaluateStoringValue(SetterReceiveDataText, GetterResponseDataText, value);
+            }
+        }
 
-        /// <summary>設定コマンドで受け取るデータとしてユーザが入力した内容のバイト表現</summary>
-        private byte[] setterReceiveByteData { get; }
+        private void reevaluateStoringValue(
+            string setterReceiveText,
+            string getterResponseText,
+            string initialValuesText)
+        {
+            // Setter の受信パターン解析
+            if (tryParseReceiveData(
+                setterReceiveText,
+                out var setterReceiveAsByte,
+                out var matchRanges,
+                out var placeholderRanges))
+            {
+                this.setterReceiveAsByte = setterReceiveAsByte;
+                this.matchRanges = matchRanges;
+                this.setterPlaceholderRanges = placeholderRanges;
+            }
+            else
+            {
+                this.setterReceiveAsByte = null;
+                return;
+            }
 
-        /// <summary>設定コマンドで返却するデータとしてユーザが入力した内容のバイト表現</summary>
-        private byte[] setterResponseByteData { get; }
+            // Getter で送り返すデータ解析
+            if (tryParseResponseData(
+                getterResponseText,
+                placeholderRanges,
+                out var getterResponseAsByte,
+                out var getterPlaceholderRanges))
+            {
+                this.getterResponseAsByte = getterResponseAsByte;
+                this.getterPlaceholderRanges = getterPlaceholderRanges;
+            }
+            else
+            {
+                this.getterResponseAsByte = null;
+                return;
+            }
 
-        /// <summary>取得コマンドで受け取るデータとしてユーザが入力した内容のバイト表現</summary>
-        private byte[] getterReceiveByteData { get; }
+            // 初期値解析
+            if (tryParseStoredData(initialValuesText, out var storedDataAsByte))
+            {
+                this.storedDataAsByte = storedDataAsByte;
+            }
+            else
+            {
+                this.storedDataAsByte = null;
+                return;
+            }
 
-        /// <summary>取得コマンドで返却するデータとしてユーザが入力した内容のバイト表現</summary>
-        private byte[] getterResponseByteData { get; }
+            // 初期値埋め込み
+            if (!tryEmbedStoredValue(getterResponseAsByte, storedDataAsByte, getterPlaceholderRanges))
+            {
+                this.getterResponseAsByte = null;
+            }
+        }
 
-        private ushort[] setterReceiveMatchingData { get; }
-        private ushort[] getterReceiveMatchingData { get; }
+        // バイト表現
 
-        private Range[] setterReceiveMatchRanges { get; }
-        private Range[] setterReceivePlaceholderRanges { get; }
+        private byte[]? _setterReceiveAsByte = null;
+        private byte[]? setterReceiveAsByte
+        {
+            get => _setterReceiveAsByte;
+            set
+            {
+                _setterReceiveAsByte = value;
+                IsValidChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
-        private List<byte[]> storedData { get; set; }
+        private byte[]? _setterResponseAsByte = null;
+        private byte[]? setterResponseAsByte
+        {
+            get => _setterResponseAsByte;
+            set
+            {
+                _setterResponseAsByte = value;
+                IsValidChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private byte[]? _getterReceiveAsByte = null;
+        private byte[]? getterReceiveAsByte
+        {
+            get => _getterReceiveAsByte;
+            set
+            {
+                _getterReceiveAsByte = value;
+                IsValidChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private byte[]? _getterResponseAsByte = null;
+        private byte[]? getterResponseAsByte
+        {
+            get => _getterResponseAsByte;
+            set
+            {
+                _getterResponseAsByte = value;
+                IsValidChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private List<byte[]>? _storedDataAsByte = null;
+        private List<byte[]>? storedDataAsByte
+        {
+            get => _storedDataAsByte;
+            set
+            {
+                _storedDataAsByte = value;
+                IsValidChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private Range[]? matchRanges { get; set; }
+        private Range[]? setterPlaceholderRanges { get; set; }
+        private Range[]? getterPlaceholderRanges { get; set; }
+
+        /// <summary>
+        /// このルールが機能するのに必要な条件を満たしているか
+        /// </summary>
+        [MemberNotNullWhen(true,
+            nameof(setterReceiveAsByte), nameof(setterResponseAsByte),
+            nameof(getterReceiveAsByte), nameof(getterResponseAsByte),
+            nameof(storedDataAsByte), nameof(matchRanges),
+            nameof(setterPlaceholderRanges), nameof(getterPlaceholderRanges))]
+        public bool IsValid =>
+            setterReceiveAsByte != null &&
+            setterResponseAsByte != null &&
+            getterReceiveAsByte != null &&
+            getterResponseAsByte != null &&
+            storedDataAsByte != null &&
+            matchRanges != null &&
+            setterPlaceholderRanges != null &&
+            getterPlaceholderRanges != null;
+
+        /// <summary>
+        /// <see cref="IsValid"/>の値に影響のある変更がされた場合に発生する
+        /// </summary>
+        public event EventHandler? IsValidChanged;
 
         /// <inheritdoc cref="IRule.Description"/>
         public string Description => string.Empty;
 
-        /// <summary>
-        /// <see cref="Rule"/>インスタンスの生成と初期化
-        /// </summary>
-        /// <param name="name">ルールの名前</param>
-        /// <param name="setterReceiveData">設定コマンドで受け取ったデータとしてユーザが入力した文字列</param>
-        /// <param name="setterResponseData">設定コマンドで返却するデータとしてユーザが入力した文字列</param>
-        /// <param name="getterReceiveData">取得コマンドで受け取ったデータとしてユーザが入力した文字列</param>
-        /// <param name="getterResponseData">取得コマンドで返却するデータとしてユーザが入力した文字列</param>
-        /// <param name="initialValuesData">保持する値の初期値としてユーザが入力した文字列</param>
-        /// <exception cref="ArgumentException">引数の形式が正しくないとき</exception>
-        public Rule(
-            string name,
-            string setterReceiveData,
-            string setterResponseData,
-            string getterReceiveData,
-            string getterResponseData,
-            string initialValuesData)
-        {
-            Name = name;
-            SetterReceiveDataText = setterReceiveData;
-            SetterResponseDataText = setterResponseData;
-            GetterReceiveDataText = getterReceiveData;
-            GetterResponseDataText = getterResponseData;
-
-            (setterReceiveByteData, setterReceiveMatchRanges, setterReceivePlaceholderRanges) = parseReceiveMatchData(setterReceiveData);
-            setterResponseByteData = parseByteArray(setterResponseData).ToArray();
-            getterReceiveByteData = parseByteArray(getterReceiveData).ToArray();
-            getterResponseByteData = parseResponseMatchData(getterResponseData, setterReceivePlaceholderRanges);
-            storedData = parseStoredData(initialValuesData).ToList();
-        }
-
         /// <inheritdoc cref="IRule.CanResponse(byte[])"/>
         public bool CanResponse(byte[] receivedData)
         {
-            if (receivedData.SequenceEqual(getterReceiveByteData))
+            if (!IsValid)
+            {
+                return false;
+            }
+
+            if (receivedData.SequenceEqual(getterReceiveAsByte))
             {
                 return true;
             }
 
-            return receivedData.Length == setterReceiveByteData.Length
-                && setterReceiveMatchRanges.All(range => sequenceEqualsRange(setterReceiveByteData, receivedData, range));
+            return receivedData.Length == setterReceiveAsByte.Length
+                && matchRanges.All(range => sequenceEqualsRange(setterReceiveAsByte, receivedData, range));
         }
 
         private bool sequenceEqualsRange(byte[] expected, byte[] actual, Range range)
@@ -105,96 +253,143 @@ namespace TcpServerEmulator.Rules.StoreValue
         /// <inheritdoc cref="IRule.GetResponse(byte[])"/>
         public byte[] GetResponse(byte[] receivedData)
         {
-            if (receivedData.SequenceEqual(getterReceiveByteData))
+            if (!IsValid)
             {
-                for (int i = 0; i < setterReceivePlaceholderRanges.Length; i++)
-                {
-                    storedData[i].CopyTo(getterResponseByteData, setterReceivePlaceholderRanges[i].Start.Value);
-                }
-                return getterResponseByteData;
+                throw new InvalidOperationException();
             }
 
-            storedData = setterReceivePlaceholderRanges
+            if (receivedData.SequenceEqual(getterReceiveAsByte))
+            {
+                return getterResponseAsByte;
+            }
+
+            storedDataAsByte = setterPlaceholderRanges
                 .Select(range => receivedData.AsSpan(range).ToArray())
                 .ToList();
 
-            return setterResponseByteData;
+            if (tryEmbedStoredValue(getterResponseAsByte, storedDataAsByte, getterPlaceholderRanges))
+            {
+                return setterResponseAsByte;
+            }
+
+            throw new InvalidOperationException();
         }
 
-        private (byte[] Data, Range[] MatchRanges, Range[] PlaceholderRanges) parseReceiveMatchData(string text)
+        private bool tryParseReceiveData(
+            string text,
+            [NotNullWhen(true)] out byte[]? dataAsByte,
+            [NotNullWhen(true)] out Range[]? matchRanges,
+            [NotNullWhen(true)] out Range[]? placeholderRanges)
         {
-            var matchRanges = new List<Range>();
-            var placeholderRanges = new List<Range>();
-            var data = new List<byte>();
+            dataAsByte = null;
+            matchRanges = null;
+            placeholderRanges = null;
+
+            var index = 0;
             var matchStartPosition = 0;
             var matchLength = 0;
-            var index = 0;
+
+            var dataBuffer = new List<byte>();
+            var matchRangesBuffer = new List<Range>();
+            var placeholderRangesBuffer = new List<Range>();
+
+            var regex = new Regex(@"^\*(\d+)$");
 
             foreach (string substring in text.Split(','))
             {
-                var regex = new Regex(@"^\*(\d+)$");
                 var match = regex.Match(substring);
-                if (match.Success)
+                if (match.Success) // プレースホルダー "*{N}" の場合
                 {
-                    if (!int.TryParse(match.Groups[1].Value, out int count))
-                    {
-                        throw new ArgumentException($"{substring} is invalid");
-                    }
-
+                    // これまで解析済みの数字列を Match Range として残す
                     if (matchLength > 0)
                     {
-                        matchRanges.Add(new Range(matchStartPosition, index));
+                        matchRangesBuffer.Add(new Range(matchStartPosition, index));
                         matchLength = 0;
                     }
 
-                    data.AddRange(Enumerable.Repeat<byte>(0xFF, count));
-                    placeholderRanges.Add(new Range(index, index + count));
-                    index += count;
+
+                    if (!tryAddPlaceholderRange(match.Groups[1].Value, dataBuffer, placeholderRangesBuffer, ref index))
+                    {
+                        return false;
+                    }
                 }
-                else
+                else // 数字の場合
                 {
                     if (!byte.TryParse(substring, out byte byteData))
                     {
-                        throw new ArgumentException($"{substring} is invalid");
+                        return false;
                     }
 
+                    dataBuffer.Add(byteData);
+
+                    // Range は、連続した数字列が終わるとき
+                    // (プレースホルダーの登場 or 入力の終わり) に生成するので、
+                    // ここではそのための情報を残すのみ
                     if (matchLength == 0)
                     {
                         matchStartPosition = index;
                     }
                     matchLength++;
 
-                    data.Add(byteData);
                     index++;
                 }
             }
 
+            // これまで解析済みの数字列を Match Range として残す
             if (matchLength > 0)
             {
-                matchRanges.Add(new Range(matchStartPosition, index));
+                matchRangesBuffer.Add(new Range(matchStartPosition, index));
             }
 
-            return (data.ToArray(), matchRanges.ToArray(), placeholderRanges.ToArray());
+            dataAsByte = dataBuffer.ToArray();
+            matchRanges = matchRangesBuffer.ToArray();
+            placeholderRanges = placeholderRangesBuffer.ToArray();
+            return true;
         }
 
-        private byte[] parseResponseMatchData(string text, Range[] placeHolderRanges)
+        private bool tryAddPlaceholderRange(
+            string text,
+            List<byte> dataBuffer,
+            List<Range> matchRangesBuffer,
+            ref int index)
         {
-            var data = new List<byte>();
+            if (!int.TryParse(text, out int count))
+            {
+                return false;
+            }
+
+            dataBuffer.AddRange(Enumerable.Repeat<byte>(0xFF, count));
+            matchRangesBuffer.Add(new Range(index, index + count));
+            index += count;
+            return true;
+        }
+
+        private bool tryParseResponseData(
+            string text,
+            Range[] setterPlaceholderRanges,
+            [NotNullWhen(true)] out byte[]? dataAsByte,
+            [NotNullWhen(true)] out Range[]? getterPlaceholderRanges)
+        {
+            dataAsByte = null;
+            getterPlaceholderRanges = null;
+            var dataBuffer = new List<byte>();
+            var placeholderBufffer = new List<Range>();
 
             var placeholderIndex = 0;
 
-            foreach (string substring in text.Split(',').Select(item => item.Trim()))
+            foreach (string substring in text.Split(','))
             {
                 if (substring == "*")
                 {
-                    if (placeholderIndex >= placeHolderRanges.Length)
+                    if (placeholderIndex >= setterPlaceholderRanges.Length)
                     {
-                        throw new ArgumentException($"{substring} is invalid");
+                        return false;
                     }
-                    var placeholderRange = placeHolderRanges[placeholderIndex];
+                    var placeholderRange = setterPlaceholderRanges[placeholderIndex];
                     var placeholderLength = placeholderRange.End.Value - placeholderRange.Start.Value;
 
-                    data.AddRange(Enumerable.Repeat<byte>(0xFF, placeholderLength));
+                    dataBuffer.AddRange(Enumerable.Repeat<byte>(0xFF, placeholderLength));
+                    placeholderBufffer.Add(setterPlaceholderRanges[placeholderIndex]);
 
                     placeholderIndex++;
                 }
@@ -202,51 +397,77 @@ namespace TcpServerEmulator.Rules.StoreValue
                 {
                     if (!byte.TryParse(substring, out byte byteData))
                     {
-                        throw new ArgumentException($"{substring} is invalid");
+                        return false;
                     }
-                    data.Add(byteData);
+                    dataBuffer.Add(byteData);
                 }
             }
 
-            return data.ToArray();
+            dataAsByte = dataBuffer.ToArray();
+            getterPlaceholderRanges = placeholderBufffer.ToArray();
+            return true;
         }
 
-        private IEnumerable<byte> parseByteArray(string text)
+        private bool tryParseByteArray(
+            string text,
+            [NotNullWhen(true)] out byte[]? result)
         {
+            result = null;
+            var buffer = new List<byte>();
             foreach (var substring in text.Split(','))
             {
                 if (!byte.TryParse(substring, out byte byteData))
                 {
-                    throw new ArgumentException($"{substring} is invalid");
+                    return false;
                 }
-                yield return byteData;
+                buffer.Add(byteData);
             }
+            result = buffer.ToArray();
+            return true;
         }
 
-        private IEnumerable<byte[]> parseStoredData(string text)
+        private bool tryParseStoredData(
+            string text,
+            [NotNullWhen(true)] out List<byte[]>? byteData)
         {
-            foreach (var substring in text.Split(Environment.NewLine))
+            byteData = null;
+            var buffer = new List<byte[]>();
+            var input = text
+                .Split(Environment.NewLine)
+                .Where(substring => !string.IsNullOrWhiteSpace(substring));
+            foreach (var substring in input)
             {
-                yield return parseByteArray(substring).ToArray();
-            }
-        }
-
-        //private readonly struct Range
-        //{
-        //    public int Position { get; init; }
-        //    public int Length { get; init; }
-        //}
-
-        private IEnumerable<ushort> parseMatchData(string text)
-        {
-            foreach (string substring in text.Split(','))
-            {
-                if (!ushort.TryParse(substring, out ushort data) || data > byte.MaxValue)
+                if (!tryParseByteArray(substring, out var initialValueAsByte))
                 {
-                    throw new ArgumentException($"{substring} is invalid");
+                    return false;
                 }
-                yield return data;
+                buffer.Add(initialValueAsByte);
             }
+
+            byteData = buffer;
+            return true;
+        }
+
+        private bool tryEmbedStoredValue(
+            byte[] responseAsByte,
+            IReadOnlyList<byte[]> storedValues,
+            Range[] placeholderRanegs)
+        {
+            if (placeholderRanegs.Length > storedValues.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < placeholderRanegs.Length; i++)
+            {
+                if (placeholderRanegs[i].End.Value > responseAsByte.Length)
+                {
+                    return false;
+                }
+                storedValues[i].CopyTo(responseAsByte, placeholderRanegs[i].Start.Value);
+            }
+
+            return true;
         }
     }
 }
