@@ -1,80 +1,161 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Prism.Commands;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using System.Windows;
 
 namespace TcpServerEmulator.Rules.StoreValue.DetailWindow
 {
     internal class ViewModel : BindableBase, IDialogAware
     {
+        private Rule? _model = null;
+        [DisallowNull]
+        private Rule? model
+        {
+            get => _model;
+            set
+            {
+                _model = value;
+                RaisePropertyChanged(nameof(canExecuteOk));
+            }
+        }
+
+        /// <summary>この ViewModel が、操作の対象となるモデルを持っているか否か</summary>
+        [MemberNotNullWhen(true, nameof(model), nameof(_model))]
+        public bool HasModel => model != null;
+
+        [MemberNotNull(nameof(model), nameof(_model))]
+        private void assertHasModel()
+        {
+            if (!HasModel)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
         /// <inheritdoc cref="IDialogAware.Title"/>
         public string Title => "値保持ルールの編集";
 
-        private DelegateCommand<string>? closeDialogCommand;
-        /// <summary>OKまたはCancelでダイアログを閉じるときのコマンド</summary>
-        public ICommand CloseDialogCommand =>
-            closeDialogCommand ?? (closeDialogCommand = new DelegateCommand<string>(parameter =>
+        private DelegateCommand? okCommand;
+        /// <summary>OKボタンのコマンド</summary>
+        public ICommand OkCommand =>
+            okCommand ?? (okCommand = new DelegateCommand(() =>
             {
-                ButtonResult result = ButtonResult.None;
+                assertHasModel();
 
-                var dialogParameter = new DialogParameters();
-
-                if (parameter?.ToLower() == "true")
+                var dialogParameter = new DialogParameters
                 {
-                    result = ButtonResult.OK;
+                    { nameof(IRule), model }
+                };
+                RaiseRequestClose(new DialogResult(ButtonResult.OK, dialogParameter));
+            })
+            .ObservesCanExecute(() => canExecuteOk));
 
-                    try
-                    {
-                        var rule = new Rule(
-                            Name,
-                            SetterReceiveDataText,
-                            SetterResponseDataText,
-                            GetterReceiveDataText,
-                            GetterResponseDataText,
-                            InitialValuesText);
-                        dialogParameter.Add("Rule", rule);
-                    }
-                    catch (ArgumentException e)
-                    {
-                        MessageBox.Show(e.Message);
-                        return;
-                    }
-                    result = ButtonResult.OK;
-                }
-                else if (parameter?.ToLower() == "false")
-                {
-                    result = ButtonResult.Cancel;
-                }
+        private bool canExecuteOk => HasModel && model.IsValid;
 
-                RaiseRequestClose(new DialogResult(result, dialogParameter));
+        private void handleIsValidChanged(object? sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(canExecuteOk));
+        }
+
+        private DelegateCommand? cancelCommand;
+        /// <summary>キャンセルボタンのコマンド</summary>
+        public ICommand CancelCommand =>
+            cancelCommand ?? (cancelCommand = new DelegateCommand(() =>
+            {
+                RaiseRequestClose(new DialogResult(ButtonResult.Cancel));
             }));
 
         /// <inheritdoc cref="IDialogAware.RequestClose"/>
         public event Action<IDialogResult>? RequestClose;
 
         /// <summary>ユーザーが入力した「設定コマンドで受け取るデータ」</summary>
-        public string SetterReceiveDataText { get; set; } = string.Empty;
+        /// <exception cref="InvalidOperationException">
+        ///   この ViewModel が操作対象となるモデルを持っていない場合に設定しようとしたとき。
+        ///   <seealso cref="HasModel"/>
+        /// </exception>
+        public string SetterReceiveDataText
+        {
+            get => model?.SetterReceiveDataText ?? string.Empty;
+            set
+            {
+                assertHasModel();
+                model.SetterReceiveDataText = value;
+            }
+        }
 
         /// <summary>ユーザーが入力した「設定コマンドで返却するデータ」</summary>
-        public string SetterResponseDataText { get; set; } = string.Empty;
+        /// <exception cref="InvalidOperationException">
+        ///   この ViewModel が操作対象となるモデルを持っていない場合に設定しようとしたとき。
+        ///   <seealso cref="HasModel"/>
+        /// </exception>
+        public string SetterResponseDataText
+        {
+            get => model?.SetterResponseDataText ?? string.Empty;
+            set
+            {
+                assertHasModel();
+                model.SetterResponseDataText = value;
+            }
+        }
 
         /// <summary>ユーザーが入力した「取得コマンドで受け取るデータ」</summary>
-        public string GetterReceiveDataText { get; set; } = string.Empty;
+        /// <exception cref="InvalidOperationException">
+        ///   この ViewModel が操作対象となるモデルを持っていない場合に設定しようとしたとき。
+        ///   <seealso cref="HasModel"/>
+        /// </exception>
+        public string GetterReceiveDataText
+        {
+            get => model?.GetterReceiveDataText ?? string.Empty;
+            set
+            {
+                assertHasModel();
+                model.GetterReceiveDataText = value;
+            }
+        }
 
         /// <summary>ユーザーが入力した「取得コマンドで返却するデータ」</summary>
-        public string GetterResponseDataText { get; set; } = string.Empty;
+        /// <exception cref="InvalidOperationException">
+        ///   この ViewModel が操作対象となるモデルを持っていない場合に設定しようとしたとき。
+        ///   <seealso cref="HasModel"/>
+        /// </exception>
+        public string GetterResponseDataText
+        {
+            get => model?.GetterResponseDataText ?? string.Empty;
+            set
+            {
+                assertHasModel();
+                model.GetterResponseDataText = value;
+            }
+        }
 
         /// <summary>ユーザーが入力した「保持する値の初期値」</summary>
-        public string InitialValuesText { get; set; } = string.Empty;
+        /// <exception cref="InvalidOperationException">
+        ///   この ViewModel が操作対象となるモデルを持っていない場合に設定しようとしたとき。
+        ///   <seealso cref="HasModel"/>
+        /// </exception>
+        public string InitialValuesText
+        {
+            get => model?.InitialValuesText ?? string.Empty;
+            set
+            {
+                assertHasModel();
+                model.InitialValuesText = value;
+            }
+        }
 
         /// <summary>ルールの名前</summary>
-        public string Name { get; set; } = string.Empty;
+        public string Name
+        {
+            get => model?.Name ?? string.Empty;
+            set
+            {
+                if (HasModel)
+                {
+                    model.Name = value;
+                }
+            }
+        }
 
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
@@ -87,11 +168,20 @@ namespace TcpServerEmulator.Rules.StoreValue.DetailWindow
         /// <inheritdoc cref="IDialogAware.OnDialogClosed"/>
         public void OnDialogClosed()
         {
+            if (HasModel)
+            {
+                model.IsValidChanged -= handleIsValidChanged;
+            }
         }
 
         /// <inheritdoc cref="IDialogAware.OnDialogOpened(IDialogParameters)"/>
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            if (parameters.TryGetValue<Rule>(nameof(IRule), out var rule))
+            {
+                model = rule;
+                model.IsValidChanged += handleIsValidChanged;
+            }
         }
     }
 }
