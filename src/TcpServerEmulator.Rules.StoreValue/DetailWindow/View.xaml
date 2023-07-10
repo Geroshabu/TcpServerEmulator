@@ -14,7 +14,7 @@
         <StackPanel Orientation="Horizontal">
             <Label Content="名前:"
                    Margin="5"/>
-            <TextBox Text="{Binding Name}"
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                      VerticalContentAlignment="Center"
                      Width="500"
                      Margin="5"/>
@@ -26,13 +26,13 @@
                        Margin="5,0"/>
                 <Label Content="保持する部分は「*N」で指定します。Nはバイト数です。例:「104,111,*4,103,101,13,10」"
                        Margin="5,0"/>
-                <TextBox Text="{Binding SetterReceiveDataText}"
+                <TextBox Text="{Binding SetterReceiveDataText, UpdateSourceTrigger=PropertyChanged}"
                          Height="36"
                          TextWrapping="Wrap"
                          Margin="5"/>
                 <Label Content="設定コマンドで返却するデータ(byte配列)(カンマ区切り):"
                        Margin="5,0"/>
-                <TextBox Text="{Binding SetterResponseDataText}"
+                <TextBox Text="{Binding SetterResponseDataText,UpdateSourceTrigger=PropertyChanged}"
                          Height="36"
                          TextWrapping="Wrap"
                          Margin="5"/>
@@ -42,7 +42,7 @@
             <StackPanel>
                 <Label Content="取得コマンドで受け取るデータ(byte配列)(カンマ区切り):"
                        Margin="5,0"/>
-                <TextBox Text="{Binding GetterReceiveDataText}"
+                <TextBox Text="{Binding GetterReceiveDataText, UpdateSourceTrigger=PropertyChanged}"
                          Height="36"
                          TextWrapping="Wrap"
                          Margin="5"/>
@@ -61,7 +61,7 @@
                    Content="初期値(複数入力時は改行):"
                    VerticalAlignment="Center"
                    Margin="5"/>
-            <TextBox Text="{Binding InitialValuesText}"
+            <TextBox Text="{Binding InitialValuesText, UpdateSourceTrigger=PropertyChanged}"
                      Height="72"
                      TextWrapping="Wrap"
                      Margin="5"/>

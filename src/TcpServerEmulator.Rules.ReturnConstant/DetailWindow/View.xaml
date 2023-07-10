@@ -22,13 +22,13 @@
         </StackPanel>
         <Label Content="受け取るデータ(byte配列)(カンマ区切り):"
                Margin="5,10,5,0"/>
-        <TextBox Text="{Binding ReceiveDataText}"
+        <TextBox Text="{Binding ReceiveDataText, UpdateSourceTrigger=PropertyChanged}"
                  Height="50"
                  TextWrapping="Wrap"
                  Margin="5"/>
         <Label Content="返却するデータ(byte配列)(カンマ区切り):"
                Margin="5,10,5,0"/>
-        <TextBox Text="{Binding ResponseDataText}"
+        <TextBox Text="{Binding ResponseDataText, UpdateSourceTrigger=PropertyChanged}"
                  Height="50"
                  TextWrapping="Wrap"
                  Margin="5"/>
