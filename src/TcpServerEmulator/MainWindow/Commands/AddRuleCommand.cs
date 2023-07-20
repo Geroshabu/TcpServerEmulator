@@ -12,8 +12,10 @@ namespace TcpServerEmulator.MainWindow.Commands
         private readonly IDialogService dialogService;
         private readonly RuleHolder ruleHolder;
 
+#pragma warning disable 0067
         /// <inheritdoc cref="ICommand.CanExecuteChanged"/>
         public event EventHandler? CanExecuteChanged;
+#pragma warning restore 0067
 
         public AddRuleCommand(
             IDialogService dialogService,
