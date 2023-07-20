@@ -32,6 +32,8 @@ namespace TcpServerEmulator
             containerRegistry.RegisterManySingleton<Logger.OnMemory.Logger>(
                 typeof(Logger.OnMemory.Logger),
                 typeof(ILogger));
+
+            containerRegistry.RegisterDialog<EditRuleWindow.View, EditRuleWindow.ViewModel>(typeof(EditRuleWindow.View).FullName);
         }
 
         /// <inheritdoc cref="Prism.PrismApplicationBase.CreateShell"/>

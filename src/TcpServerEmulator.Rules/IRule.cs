@@ -3,7 +3,7 @@
     public interface IRule
     {
         /// <summary>ルールの名前</summary>
-        string Name { get; }
+        string Name { get; set; }
 
         /// <summary>このルールを説明する文</summary>
         string Description { get; }

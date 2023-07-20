@@ -19,7 +19,7 @@ namespace TcpServerEmulator.Rules.ReturnConstant
         {
             containerRegistry.Register<Plugin>();
 
-            containerRegistry.RegisterDialog<View, ViewModel>(typeof(View).FullName);
+            containerRegistry.RegisterForNavigation<View, ViewModel>(typeof(View).FullName);
         }
     }
 }

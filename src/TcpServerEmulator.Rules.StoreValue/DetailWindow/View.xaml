@@ -11,14 +11,6 @@
     <StackPanel>
         <TextBlock Text="設定コマンドで値を設定し、取得コマンドで値を取得します。"
                    Margin="5"/>
-        <StackPanel Orientation="Horizontal">
-            <Label Content="名前:"
-                   Margin="5"/>
-            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                     VerticalContentAlignment="Center"
-                     Width="500"
-                     Margin="5"/>
-        </StackPanel>
         <GroupBox Header="設定コマンド"
                   Margin="5">
             <StackPanel>
@@ -66,15 +58,5 @@
                      TextWrapping="Wrap"
                      Margin="5"/>
         </DockPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="OK"
-                    Command="{Binding OkCommand}"
-                    Width="80"
-                    Margin="5"/>
-            <Button Content="Cancel"
-                    Command="{Binding CancelCommand}"
-                    Width="80"
-                    Margin="5"/>
-        </StackPanel>
     </StackPanel>
 </UserControl>
