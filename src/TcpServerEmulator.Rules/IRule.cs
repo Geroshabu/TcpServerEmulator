@@ -3,20 +3,10 @@
     public interface IRule
     {
         /// <summary>ルールの名前</summary>
-        string Name { get; set; }
+        string Name { get; }
 
         /// <summary>このルールを説明する文</summary>
         string Description { get; }
-
-        /// <summary>
-        /// このルールが機能するのに必要な条件を満たしているか
-        /// </summary>
-        bool IsValid { get; }
-
-        /// <summary>
-        /// <see cref="IsValid"/>の値に影響のある変更がされた場合に発生する
-        /// </summary>
-        event EventHandler IsValidChanged;
 
         /// <summary>受け取ったデータに対して応答できるか</summary>
         /// <param name="receivedData">クライアントから受け取ったデータ</param>
