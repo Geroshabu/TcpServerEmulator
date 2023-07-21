@@ -16,9 +16,9 @@ namespace TcpServerEmulator.EditRuleWindow
 
         private const string regionName = "EditRuleRegion";
 
-        private IRule? _model = null;
+        private IEditableRule? _model = null;
         [DisallowNull]
-        private IRule? model
+        private IEditableRule? model
         {
             get => _model;
             set
@@ -66,7 +66,7 @@ namespace TcpServerEmulator.EditRuleWindow
 
                 var dialogParameter = new DialogParameters
                 {
-                    { nameof(IRule), model }
+                    { nameof(IRule), model.AsImmutableRule() }
                 };
                 RaiseRequestClose(new DialogResult(ButtonResult.OK, dialogParameter));
             })
@@ -116,7 +116,7 @@ namespace TcpServerEmulator.EditRuleWindow
         /// <inheritdoc cref="IDialogAware.OnDialogOpened(IDialogParameters)"/>
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            if (parameters.TryGetValue(nameof(IRule), out IRule rule) &&
+            if (parameters.TryGetValue(nameof(IEditableRule), out IEditableRule rule) &&
                 parameters.TryGetValue(nameof(IRulePlugin.EditWindowName), out string editWindowName))
             {
                 model = rule;
@@ -124,7 +124,7 @@ namespace TcpServerEmulator.EditRuleWindow
 
                 var navigationParameters = new NavigationParameters
                 {
-                    { nameof(IRule), rule }
+                    { nameof(IEditableRule), rule }
                 };
                 RegionManager.RequestNavigate(regionName, editWindowName, navigationParameters);
             }

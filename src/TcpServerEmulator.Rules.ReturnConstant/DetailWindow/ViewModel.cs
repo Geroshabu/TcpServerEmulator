@@ -58,7 +58,7 @@ namespace TcpServerEmulator.Rules.ReturnConstant.DetailWindow
         /// <inheritdoc cref="INavigationAware.OnNavigatedTo(NavigationContext)"/>
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (navigationContext.Parameters.TryGetValue(nameof(IRule), out Rule rule))
+            if (navigationContext.Parameters.TryGetValue(nameof(IEditableRule), out Rule rule))
             {
                 model = rule;
             }

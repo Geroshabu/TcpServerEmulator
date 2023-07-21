@@ -14,6 +14,6 @@ namespace TcpServerEmulator.Rules.StoreValue
         public string EditWindowName => typeof(View).FullName!;
 
         /// <inheritdoc cref="IRulePlugin.CreateInitialRule"/>
-        public IRule CreateInitialRule() => new Rule();
+        public IEditableRule CreateInitialRule() => new Rule();
     }
 }

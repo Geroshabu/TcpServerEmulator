@@ -38,7 +38,7 @@ namespace TcpServerEmulator.MainWindow.Commands
 
                 var dialogParameters = new DialogParameters
                 {
-                    { nameof(IRule), initialRule },
+                    { nameof(IEditableRule), initialRule },
                     { nameof(IRulePlugin.EditWindowName), editWindowName }
                 };
 

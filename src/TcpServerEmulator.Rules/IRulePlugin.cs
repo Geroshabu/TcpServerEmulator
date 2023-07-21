@@ -16,9 +16,9 @@
         string EditWindowName { get; }
 
         /// <summary>
-        /// 新しいルールのインスタンスを作成する
+        /// 新しいルールの編集可能なインスタンスを作成する
         /// </summary>
-        /// <returns>新しいルールのインスタンス</returns>
-        IRule CreateInitialRule();
+        /// <returns>新しいルールの編集可能なインスタンス</returns>
+        IEditableRule CreateInitialRule();
     }
 }
