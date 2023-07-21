@@ -6,9 +6,10 @@ namespace TcpServerEmulator.Rules.StoreValue
     /// <summary>
     /// 得た値を保持し、後で返却可能なルール
     /// </summary>
-    internal class Rule : IRule
+    internal class Rule : IRule, IEditableRule
     {
         /// <inheritdoc cref="IRule.Name"/>
+        /// <inheritdoc cref="IEditableRule.Name"/>
         public string Name { get; set; } = string.Empty;
 
         private string setterReceiveDataText = string.Empty;
@@ -202,7 +203,7 @@ namespace TcpServerEmulator.Rules.StoreValue
         private Range[]? setterPlaceholderRanges { get; set; }
         private Range[]? getterPlaceholderRanges { get; set; }
 
-        /// <inheritdoc cref="IRule.IsValid"/>
+        /// <inheritdoc cref="IEditableRule.IsValid"/>
         [MemberNotNullWhen(true,
             nameof(setterReceiveAsByte), nameof(setterResponseAsByte),
             nameof(getterReceiveAsByte), nameof(getterResponseAsByte),
@@ -218,11 +219,29 @@ namespace TcpServerEmulator.Rules.StoreValue
             setterPlaceholderRanges != null &&
             getterPlaceholderRanges != null;
 
-        /// <inheritdoc cref="IRule.IsValidChanged"/>
+        /// <inheritdoc cref="IEditableRule.IsValidChanged"/>
         public event EventHandler? IsValidChanged;
 
         /// <inheritdoc cref="IRule.Description"/>
         public string Description => string.Empty;
+
+        /// <summary>
+        /// <see cref="Rule"/>インスタンスを生成する。
+        /// 生成されたインスタンスの各プロパティ値は初期値となる。
+        /// 初期値は各プロパティを参照のこと。
+        /// </summary>
+        public Rule() { }
+
+        /// <summary>コピーコンストラクタ</summary>
+        private Rule(Rule source)
+        {
+            Name = source.Name;
+            SetterReceiveDataText = source.SetterReceiveDataText;
+            SetterResponseDataText = source.SetterResponseDataText;
+            GetterReceiveDataText = source.GetterReceiveDataText;
+            GetterResponseDataText = source.GetterResponseDataText;
+            InitialValuesText = source.InitialValuesText;
+        }
 
         /// <inheritdoc cref="IRule.CanResponse(byte[])"/>
         public bool CanResponse(byte[] receivedData)
@@ -240,6 +259,9 @@ namespace TcpServerEmulator.Rules.StoreValue
             return receivedData.Length == setterReceiveAsByte.Length
                 && matchRanges.All(range => sequenceEqualsRange(setterReceiveAsByte, receivedData, range));
         }
+
+        /// <inheritdoc cref="IEditableRule.AsImmutableRule"/>
+        public IRule AsImmutableRule() => new Rule(this);
 
         private bool sequenceEqualsRange(byte[] expected, byte[] actual, Range range)
         {

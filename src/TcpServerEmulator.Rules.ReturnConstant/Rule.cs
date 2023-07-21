@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Windows;
 
 namespace TcpServerEmulator.Rules.ReturnConstant
 {
     /// <summary>
     /// 受け取った値に対して、固定値を応答するルール
     /// </summary>
-    internal class Rule : IRule
+    internal class Rule : IRule, IEditableRule
     {
         /// <inheritdoc cref="IRule.Name"/>
+        /// <inheritdoc cref="IEditableRule.Name"/>
         public string Name { get; set; } = string.Empty;
 
         private string receiveDataText = string.Empty;
@@ -71,11 +71,11 @@ namespace TcpServerEmulator.Rules.ReturnConstant
             }
         }
 
-        /// <inheritdoc cref="IRule.IsValid"/>
+        /// <inheritdoc cref="IEditableRule.IsValid"/>
         [MemberNotNullWhen(true, nameof(receiveDataMatch), nameof(responseDataMatch))]
         public bool IsValid => receiveDataMatch != null && responseDataMatch != null;
 
-        /// <inheritdoc cref="IRule.IsValidChanged"/>
+        /// <inheritdoc cref="IEditableRule.IsValidChanged"/>
         public event EventHandler? IsValidChanged;
 
         /// <inheritdoc cref="IRule.Description"/>
@@ -93,6 +93,24 @@ namespace TcpServerEmulator.Rules.ReturnConstant
                     + (responseDataMatch.Length > 10 ? "..." : string.Empty) + "}を返します。";
             }
         }
+
+        /// <summary>
+        /// <see cref="Rule"/>インスタンスを生成する。
+        /// 生成されたインスタンスの各プロパティ値は初期値となる。
+        /// 初期値は各プロパティを参照のこと。
+        /// </summary>
+        public Rule() { }
+
+        /// <summary>コピーコンストラクタ</summary>
+        private Rule(Rule source)
+        {
+            Name = source.Name;
+            ReceiveDataText = source.ReceiveDataText;
+            ResponseDataText = source.ResponseDataText;
+        }
+
+        /// <inheritdoc cref="IEditableRule.AsImmutableRule"/>
+        public IRule AsImmutableRule() => new Rule(this);
 
         /// <inheritdoc cref="IRule.CanResponse(byte[])"/>
         public bool CanResponse(byte[] receivedData)
