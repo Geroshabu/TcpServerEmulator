@@ -115,6 +115,9 @@ namespace TcpServerEmulator.Rules.ReturnConstant
         /// <inheritdoc cref="IEditableRule.AsImmutableRule"/>
         public IRule AsImmutableRule() => new Rule(this);
 
+        /// <inheritdoc cref="IRule.AsEditableRule"/>
+        public IEditableRule AsEditableRule() => new Rule(this);
+
         /// <inheritdoc cref="IRule.CanResponse(byte[])"/>
         public bool CanResponse(byte[] receivedData)
         {

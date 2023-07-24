@@ -21,5 +21,11 @@
         ///   <see cref="CanResponse(byte[])"/>が<c>false</c>を返すような状態で呼ばれた
         /// </exception>
         byte[] GetResponse(byte[] receivedData);
+
+        /// <summary>
+        /// このルールを編集するためのルールを取得する
+        /// </summary>
+        /// <returns>このルールと同じ値を初期値に持った、編集可能なルール</returns>
+        IEditableRule AsEditableRule();
     }
 }

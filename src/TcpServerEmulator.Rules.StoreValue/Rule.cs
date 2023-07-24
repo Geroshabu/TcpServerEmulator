@@ -266,6 +266,9 @@ namespace TcpServerEmulator.Rules.StoreValue
         /// <inheritdoc cref="IEditableRule.AsImmutableRule"/>
         public IRule AsImmutableRule() => new Rule(this);
 
+        /// <inheritdoc cref="IRule.AsEditableRule"/>
+        public IEditableRule AsEditableRule() => new Rule(this);
+
         private bool sequenceEqualsRange(byte[] expected, byte[] actual, Range range)
         {
             return expected.AsSpan(range).SequenceEqual(actual.AsSpan(range));
