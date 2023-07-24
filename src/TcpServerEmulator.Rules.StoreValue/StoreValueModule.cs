@@ -19,7 +19,7 @@ namespace TcpServerEmulator.Rules.StoreValue
         {
             containerRegistry.Register<Plugin>();
 
-            containerRegistry.RegisterForNavigation<View, ViewModel>(typeof(View).FullName);
+            containerRegistry.RegisterForNavigation<View, ViewModel>(Plugin.Id.ToString());
         }
     }
 }

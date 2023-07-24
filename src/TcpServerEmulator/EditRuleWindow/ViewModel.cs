@@ -116,8 +116,7 @@ namespace TcpServerEmulator.EditRuleWindow
         /// <inheritdoc cref="IDialogAware.OnDialogOpened(IDialogParameters)"/>
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            if (parameters.TryGetValue(nameof(IEditableRule), out IEditableRule rule) &&
-                parameters.TryGetValue(nameof(IRulePlugin.EditWindowName), out string editWindowName))
+            if (parameters.TryGetValue(nameof(IEditableRule), out IEditableRule rule))
             {
                 model = rule;
                 model.IsValidChanged += handleIsValidChanged;
@@ -126,7 +125,7 @@ namespace TcpServerEmulator.EditRuleWindow
                 {
                     { nameof(IEditableRule), rule }
                 };
-                RegionManager.RequestNavigate(regionName, editWindowName, navigationParameters);
+                RegionManager.RequestNavigate(regionName, rule.Id.ToString(), navigationParameters);
             }
         }
     }

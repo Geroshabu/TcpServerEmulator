@@ -34,12 +34,10 @@ namespace TcpServerEmulator.MainWindow.Commands
             if (parameter is IRulePlugin plugin)
             {
                 var initialRule = plugin.CreateInitialRule();
-                var editWindowName = plugin.EditWindowName;
 
                 var dialogParameters = new DialogParameters
                 {
-                    { nameof(IEditableRule), initialRule },
-                    { nameof(IRulePlugin.EditWindowName), editWindowName }
+                    { nameof(IEditableRule), initialRule }
                 };
 
                 dialogService.ShowDialog(typeof(EditRuleWindow.View).FullName, dialogParameters, result =>
