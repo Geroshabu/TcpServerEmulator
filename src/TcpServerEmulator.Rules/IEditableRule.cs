@@ -9,6 +9,9 @@
     /// </remarks>
     public interface IEditableRule
     {
+        /// <summary>このルールを扱えるプラグインを表すID</summary>
+        Guid Id { get; }
+
         /// <summary>ルールの名前</summary>
         string Name { get; set; }
 

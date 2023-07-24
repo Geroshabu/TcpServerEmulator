@@ -7,6 +7,9 @@ namespace TcpServerEmulator.Rules.ReturnConstant
     /// </summary>
     internal class Plugin : IRulePlugin
     {
+        /// <summary>このプラグインを識別するためのID</summary>
+        public static Guid Id { get; } = new("57c1d6a8-3e28-41f5-b5aa-f392061c3f3c");
+
         /// <inheritdoc cref="IRulePlugin.Name"/>
         public string Name => "定数返却";
 

@@ -7,6 +7,9 @@ namespace TcpServerEmulator.Rules.ReturnConstant
     /// </summary>
     internal class Rule : IRule, IEditableRule
     {
+        /// <inheritdoc cref="IEditableRule.Id"/>
+        public Guid Id => Plugin.Id;
+
         /// <inheritdoc cref="IRule.Name"/>
         /// <inheritdoc cref="IEditableRule.Name"/>
         public string Name { get; set; } = string.Empty;

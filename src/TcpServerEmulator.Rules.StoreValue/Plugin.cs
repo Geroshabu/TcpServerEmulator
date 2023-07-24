@@ -7,6 +7,9 @@ namespace TcpServerEmulator.Rules.StoreValue
     /// </summary>
     internal class Plugin : IRulePlugin
     {
+        /// <summary>このプラグインを識別するためのID</summary>
+        public static Guid Id { get; } = new("d186ea6b-5d95-441c-b38d-dc9cd7f0c703");
+
         /// <inheritdoc cref="IRulePlugin.Name"/>
         public string Name => "値の保持";
 
