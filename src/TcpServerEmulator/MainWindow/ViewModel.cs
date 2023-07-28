@@ -25,15 +25,6 @@ namespace TcpServerEmulator.MainWindow
 
         public ICommand AddRuleCommand { get; }
 
-        private DelegateCommand removeRuleCommand;
-        public ICommand RemoveRuleCommand => removeRuleCommand ?? (removeRuleCommand = new DelegateCommand(() =>
-        {
-            if (SelectedRuleIndex < RuleItems.Count)
-            {
-                ruleHolder.RemoveRule(RuleItems[SelectedRuleIndex].Rule);
-            }
-        }));
-
         public int Port
         {
             get => server.Port;
@@ -75,7 +66,6 @@ namespace TcpServerEmulator.MainWindow
             ConnectCommand connectCommand,
             DisconnectCommand disconnectCommand,
             AddRuleCommand addRuleCommand,
-            RemoveRuleCommand removeRuleCommand,
             IDialogService dialogService)
         {
             this.ruleGeneratorHolder = ruleGeneratorHolder;
@@ -85,7 +75,6 @@ namespace TcpServerEmulator.MainWindow
             ConnectCommand = connectCommand;
             DisconnectCommand = disconnectCommand;
             AddRuleCommand = addRuleCommand;
-            //RemoveRuleCommand = removeRuleCommand;
 
             RulePlugins = new ObservableCollection<IRulePlugin>(ruleGeneratorHolder.Plugins);
             RuleItems = new ObservableCollection<RuleItemViewModel>(
@@ -101,7 +90,10 @@ namespace TcpServerEmulator.MainWindow
 
         private RuleItemViewModel createViewModel(IRule rule, RuleHolder ruleHolder, IDialogService dialogService)
         {
-            return new RuleItemViewModel(rule, new EditRuleCommand(dialogService, ruleHolder, rule));
+            return new RuleItemViewModel(
+                rule,
+                new EditRuleCommand(dialogService, ruleHolder, rule),
+                new RemoveRuleCommand(ruleHolder, rule));
         }
 
         private void handlePluginRegistered(object? sender, RulePluginRegisteredEventArgs e)

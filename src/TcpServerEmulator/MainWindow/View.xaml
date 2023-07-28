@@ -36,11 +36,6 @@
                         CommandParameter="{Binding SelectedRulePlugin}"
                         Width="80"
                         Margin="5"/>
-                <Button Content="削除"
-                        Command="{Binding RemoveRuleCommand}"
-                        CommandParameter="{Binding SelectedRule}"
-                        Width="80"
-                        Margin="5"/>
             </StackPanel>
             <ListView ItemsSource="{Binding RuleItems}"
                       SelectedIndex="{Binding SelectedRuleIndex}"
@@ -57,6 +52,14 @@
                                 <DataTemplate>
                                     <Button Content="編集"
                                             Command="{Binding EditCommand}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="削除"
+                                            Command="{Binding RemoveCommand}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

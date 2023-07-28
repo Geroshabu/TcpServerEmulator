@@ -27,17 +27,23 @@ namespace TcpServerEmulator.MainWindow
         /// <summary>このルールを編集するためのコマンド</summary>
         public ICommand EditCommand { get; }
 
+        /// <summary>このルールを一覧から削除するためのコマンド</summary>
+        public ICommand RemoveCommand { get; }
+
         /// <summary>
         /// <see cref="RuleItemViewModel"/>インスタンスの生成と初期化
         /// </summary>
         /// <param name="rule">モデルとなるルールインスタンス</param>
         /// <param name="editCommand">対象のルールを編集するコマンド</param>
+        /// <param name="removeCommand">対象のルールを一覧から削除するコマンド</param>
         public RuleItemViewModel(
             IRule rule,
-            ICommand editCommand)
+            ICommand editCommand,
+            ICommand removeCommand)
         {
             Rule = rule;
             EditCommand = editCommand;
+            RemoveCommand = removeCommand;
         }
     }
 }
