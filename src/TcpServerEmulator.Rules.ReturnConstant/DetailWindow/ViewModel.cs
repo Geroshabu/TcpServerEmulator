@@ -61,6 +61,7 @@ namespace TcpServerEmulator.Rules.ReturnConstant.DetailWindow
             if (navigationContext.Parameters.TryGetValue(nameof(IEditableRule), out Rule rule))
             {
                 model = rule;
+                RaisePropertyChanged(string.Empty);
             }
         }
 

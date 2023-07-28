@@ -126,6 +126,8 @@ namespace TcpServerEmulator.EditRuleWindow
                     { nameof(IEditableRule), rule }
                 };
                 RegionManager.RequestNavigate(regionName, rule.Id.ToString(), navigationParameters);
+
+                RaisePropertyChanged(nameof(Name));
             }
         }
     }

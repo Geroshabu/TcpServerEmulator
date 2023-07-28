@@ -106,6 +106,7 @@ namespace TcpServerEmulator.Rules.StoreValue.DetailWindow
             if (navigationContext.Parameters.TryGetValue(nameof(IEditableRule), out Rule rule))
             {
                 model = rule;
+                RaisePropertyChanged(string.Empty);
             }
         }
 
