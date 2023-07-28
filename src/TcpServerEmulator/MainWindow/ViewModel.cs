@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using TcpServerEmulator.Core;
 using TcpServerEmulator.Core.Server;
 using TcpServerEmulator.MainWindow.Commands;
@@ -73,7 +75,8 @@ namespace TcpServerEmulator.MainWindow
             ConnectCommand connectCommand,
             DisconnectCommand disconnectCommand,
             AddRuleCommand addRuleCommand,
-            RemoveRuleCommand removeRuleCommand)
+            RemoveRuleCommand removeRuleCommand,
+            IDialogService dialogService)
         {
             this.ruleGeneratorHolder = ruleGeneratorHolder;
             this.ruleHolder = ruleHolder;
@@ -86,13 +89,19 @@ namespace TcpServerEmulator.MainWindow
 
             RulePlugins = new ObservableCollection<IRulePlugin>(ruleGeneratorHolder.Plugins);
             RuleItems = new ObservableCollection<RuleItemViewModel>(
-                ruleHolder.Rules.Select(rule => new RuleItemViewModel(rule)));
+                ruleHolder.Rules.Select(rule => createViewModel(rule, ruleHolder, dialogService)));
             SelectedRulePlugin = RulePlugins.FirstOrDefault();
 
             this.ruleGeneratorHolder.Registered += handlePluginRegistered;
-            this.ruleHolder.RuleAdded += (_, e) => RuleItems.Add(new RuleItemViewModel(e.NewRule));
+            this.ruleHolder.RuleAdded += (_, e) => RuleItems.Add(createViewModel(e.NewRule, ruleHolder, dialogService));
+            this.ruleHolder.RuleReplaced += (_, e) => RuleItems[e.Index] = createViewModel(e.NewRule, ruleHolder, dialogService);
             this.ruleHolder.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
             this.logger.MessageAdded += (_, _) => RaisePropertyChanged(nameof(CommunicationHistory));
+        }
+
+        private RuleItemViewModel createViewModel(IRule rule, RuleHolder ruleHolder, IDialogService dialogService)
+        {
+            return new RuleItemViewModel(rule, new EditRuleCommand(dialogService, ruleHolder, rule));
         }
 
         private void handlePluginRegistered(object? sender, RulePluginRegisteredEventArgs e)

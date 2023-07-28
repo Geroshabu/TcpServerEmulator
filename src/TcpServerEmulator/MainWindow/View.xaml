@@ -52,6 +52,14 @@
                                         DisplayMemberBinding="{Binding Name}"/>
                         <GridViewColumn Header="説明"
                                         DisplayMemberBinding="{Binding Description}"/>
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="編集"
+                                            Command="{Binding EditCommand}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>

@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using System.Windows.Input;
+using Prism.Mvvm;
 using TcpServerEmulator.Rules;
 
 namespace TcpServerEmulator.MainWindow
@@ -23,14 +24,20 @@ namespace TcpServerEmulator.MainWindow
         /// </summary>
         public string Description => Rule.Description;
 
+        /// <summary>このルールを編集するためのコマンド</summary>
+        public ICommand EditCommand { get; }
+
         /// <summary>
         /// <see cref="RuleItemViewModel"/>インスタンスの生成と初期化
         /// </summary>
         /// <param name="rule">モデルとなるルールインスタンス</param>
+        /// <param name="editCommand">対象のルールを編集するコマンド</param>
         public RuleItemViewModel(
-            IRule rule)
+            IRule rule,
+            ICommand editCommand)
         {
             Rule = rule;
+            EditCommand = editCommand;
         }
     }
 }
