@@ -20,5 +20,11 @@
         /// </summary>
         /// <returns>新しいルールの編集可能なインスタンス</returns>
         IEditableRule CreateInitialRule();
+
+        /// <summary>
+        /// このプラグインが扱うことのできる、
+        /// <see cref="IRule"/>の実装クラスの型
+        /// </summary>
+        Type RuleType { get; }
     }
 }

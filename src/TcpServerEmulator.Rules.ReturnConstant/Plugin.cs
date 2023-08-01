@@ -18,5 +18,8 @@ namespace TcpServerEmulator.Rules.ReturnConstant
 
         /// <inheritdoc cref="IRulePlugin.CreateInitialRule"/>
         public IEditableRule CreateInitialRule() => new Rule();
+
+        /// <inheritdoc cref="IRulePlugin.RuleType"/>
+        public Type RuleType => typeof(Rule);
     }
 }
