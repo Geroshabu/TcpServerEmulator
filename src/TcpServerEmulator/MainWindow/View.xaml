@@ -9,6 +9,11 @@
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="TcpServerEmulator" Height="450" Width="800">
     <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="ファイル">
+                <MenuItem Header="名前を付けて保存" Command="{Binding SaveAsNewFileCommand}"/>
+            </MenuItem>
+        </Menu>
         <StackPanel DockPanel.Dock="Left">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Port: "
