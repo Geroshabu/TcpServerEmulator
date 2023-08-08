@@ -3,6 +3,7 @@ using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
 using TcpServerEmulator.Core;
+using TcpServerEmulator.Core.Perpetuation;
 using TcpServerEmulator.Core.Server;
 using TcpServerEmulator.Logger;
 using TcpServerEmulator.Logger.OnMemory;
@@ -33,6 +34,7 @@ namespace TcpServerEmulator
             containerRegistry.RegisterManySingleton<Logger.OnMemory.Logger>(
                 typeof(Logger.OnMemory.Logger),
                 typeof(ILogger));
+            containerRegistry.RegisterMany<Perpetuator>(typeof(ISave));
 
             containerRegistry.RegisterDialog<EditRuleWindow.View, EditRuleWindow.ViewModel>(typeof(EditRuleWindow.View).FullName);
         }
