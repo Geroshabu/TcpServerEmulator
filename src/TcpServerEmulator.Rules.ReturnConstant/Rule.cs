@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace TcpServerEmulator.Rules.ReturnConstant
 {
     /// <summary>
     /// 受け取った値に対して、固定値を応答するルール
     /// </summary>
+    [DataContract]
     internal class Rule : IRule, IEditableRule
     {
         /// <inheritdoc cref="IEditableRule.Id"/>
@@ -12,10 +14,12 @@ namespace TcpServerEmulator.Rules.ReturnConstant
 
         /// <inheritdoc cref="IRule.Name"/>
         /// <inheritdoc cref="IEditableRule.Name"/>
+        [DataMember]
         public string Name { get; set; } = string.Empty;
 
         private string receiveDataText = string.Empty;
         /// <summary>受け取るデータとしてユーザが入力した文字列</summary>
+        [DataMember]
         public string ReceiveDataText
         {
             get => receiveDataText;
@@ -35,6 +39,7 @@ namespace TcpServerEmulator.Rules.ReturnConstant
 
         private string responseDataText = string.Empty;
         /// <summary>返却するデータとしてユーザが入力した文字列</summary>
+        [DataMember]
         public string ResponseDataText
         {
             get => responseDataText;

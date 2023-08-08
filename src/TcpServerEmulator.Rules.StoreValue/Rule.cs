@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 
 namespace TcpServerEmulator.Rules.StoreValue
@@ -6,6 +7,7 @@ namespace TcpServerEmulator.Rules.StoreValue
     /// <summary>
     /// 得た値を保持し、後で返却可能なルール
     /// </summary>
+    [DataContract]
     internal class Rule : IRule, IEditableRule
     {
         /// <inheritdoc cref="IEditableRule.Id"/>
@@ -13,10 +15,12 @@ namespace TcpServerEmulator.Rules.StoreValue
 
         /// <inheritdoc cref="IRule.Name"/>
         /// <inheritdoc cref="IEditableRule.Name"/>
+        [DataMember]
         public string Name { get; set; } = string.Empty;
 
         private string setterReceiveDataText = string.Empty;
         /// <summary>設定コマンドで受け取るデータとしてユーザが入力した文字列</summary>
+        [DataMember]
         public string SetterReceiveDataText
         {
             get => setterReceiveDataText;
@@ -29,6 +33,7 @@ namespace TcpServerEmulator.Rules.StoreValue
 
         private string setterResponseDataText = string.Empty;
         /// <summary>設定コマンドで返却するデータとしてユーザが入力した文字列</summary>
+        [DataMember]
         public string SetterResponseDataText
         {
             get => setterResponseDataText;
@@ -48,6 +53,7 @@ namespace TcpServerEmulator.Rules.StoreValue
 
         private string getterReceiveDataText = string.Empty;
         /// <summary>取得コマンドで受け取るデータとしてユーザが入力した文字列</summary>
+        [DataMember]
         public string GetterReceiveDataText
         {
             get => getterReceiveDataText;
@@ -67,6 +73,7 @@ namespace TcpServerEmulator.Rules.StoreValue
 
         private string getterResponseDataText = string.Empty;
         /// <summary>取得コマンドで返却するデータとしてユーザが入力した文字列</summary>
+        [DataMember]
         public string GetterResponseDataText
         {
             get => getterResponseDataText;
@@ -79,6 +86,7 @@ namespace TcpServerEmulator.Rules.StoreValue
 
         private string initialValuesText = string.Empty;
         /// <summary>保持する値の初期値としてユーザが入力した文字列</summary>
+        [DataMember]
         public string InitialValuesText
         {
             get => initialValuesText;
