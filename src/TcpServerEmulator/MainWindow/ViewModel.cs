@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
-using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using TcpServerEmulator.Core;
+using TcpServerEmulator.Core.Project;
 using TcpServerEmulator.Core.Server;
 using TcpServerEmulator.MainWindow.Commands;
 using TcpServerEmulator.Rules;
@@ -15,7 +14,8 @@ namespace TcpServerEmulator.MainWindow
     internal class ViewModel : BindableBase
     {
         private readonly RulePluginHolder ruleGeneratorHolder;
-        private readonly RuleHolder ruleHolder;
+        private readonly ProjectHolder projectHolder;
+        private readonly Project project;
         private readonly TcpServer server;
         private readonly Logger.OnMemory.Logger logger;
 
@@ -62,6 +62,7 @@ namespace TcpServerEmulator.MainWindow
 
         public ViewModel(
             RulePluginHolder ruleGeneratorHolder,
+            ProjectHolder projectHolder,
             RuleHolder ruleHolder,
             TcpServer server,
             Logger.OnMemory.Logger logger,
@@ -72,7 +73,8 @@ namespace TcpServerEmulator.MainWindow
             IDialogService dialogService)
         {
             this.ruleGeneratorHolder = ruleGeneratorHolder;
-            this.ruleHolder = ruleHolder;
+            this.projectHolder = projectHolder;
+            projectHolder.Current = project = new Project();
             this.server = server;
             this.logger = logger;
             ConnectCommand = connectCommand;
@@ -86,9 +88,9 @@ namespace TcpServerEmulator.MainWindow
             SelectedRulePlugin = RulePlugins.FirstOrDefault();
 
             this.ruleGeneratorHolder.Registered += handlePluginRegistered;
-            this.ruleHolder.RuleAdded += (_, e) => RuleItems.Add(createViewModel(e.NewRule, ruleHolder, dialogService));
-            this.ruleHolder.RuleReplaced += (_, e) => RuleItems[e.Index] = createViewModel(e.NewRule, ruleHolder, dialogService);
-            this.ruleHolder.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
+            project.RuleHolder.RuleAdded += (_, e) => RuleItems.Add(createViewModel(e.NewRule, ruleHolder, dialogService));
+            project.RuleHolder.RuleReplaced += (_, e) => RuleItems[e.Index] = createViewModel(e.NewRule, ruleHolder, dialogService);
+            project.RuleHolder.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
             this.logger.MessageAdded += (_, _) => RaisePropertyChanged(nameof(CommunicationHistory));
         }
 
