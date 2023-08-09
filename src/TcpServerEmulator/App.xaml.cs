@@ -4,6 +4,7 @@ using Prism.Ioc;
 using Prism.Modularity;
 using TcpServerEmulator.Core;
 using TcpServerEmulator.Core.Perpetuation;
+using TcpServerEmulator.Core.Project;
 using TcpServerEmulator.Core.Server;
 using TcpServerEmulator.Logger;
 using TcpServerEmulator.Logger.OnMemory;
@@ -26,6 +27,7 @@ namespace TcpServerEmulator
                 typeof(RulePluginHolder),
                 typeof(IRulePluginRegister));
             containerRegistry.RegisterSingleton<RuleHolder>();
+            containerRegistry.RegisterSingleton<ProjectHolder>();
             containerRegistry.Register<ConnectCommand>();
             containerRegistry.Register<DisconnectCommand>();
             containerRegistry.Register<AddRuleCommand>();
