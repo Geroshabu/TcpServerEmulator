@@ -6,10 +6,10 @@
     public interface ISave
     {
         /// <summary>
-        /// 現在のルールをファイルに保存する。
+        /// 指定されたプロジェクトをファイルに保存する。
         /// </summary>
         /// <param name="destinationPath">保存先のファイルパス</param>
-        /// <param name="ruleHolder">ルール保持者</param>
+        /// <param name="project">保存したいプロジェクト</param>
         /// <exception cref="ArgumentException">
         ///   <paramref name="destinationPath"/>が空文字、または空白文字のみ
         /// </exception>
@@ -26,8 +26,8 @@
         ///   <paramref name="destinationPath"/>に至る途中のパスが存在しない場合
         /// </exception>
         /// <exception cref="System.Runtime.Serialization.InvalidDataContractException">
-        ///   <paramref name="ruleHolder"/>内に、シリアライズ方法が不明な型が含まれていた場合
+        ///   <paramref name="project"/>内に、シリアライズ方法が不明な型が含まれていた場合
         /// </exception>
-        void SaveRules(string destinationPath, RuleHolder ruleHolder);
+        void SaveProject(string destinationPath, Project.Project project);
     }
 }

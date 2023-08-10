@@ -1,9 +1,12 @@
-﻿using TcpServerEmulator.Rules;
+﻿using System.Runtime.Serialization;
+using TcpServerEmulator.Rules;
 
 namespace TcpServerEmulator.Core
 {
+    [DataContract]
     public class RuleHolder
     {
+        [DataMember]
         private readonly List<IRule> rules = new();
 
         /// <summary>ルールが追加されたときに発生する</summary>

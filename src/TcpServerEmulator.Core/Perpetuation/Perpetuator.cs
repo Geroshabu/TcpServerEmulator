@@ -1,7 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using TcpServerEmulator.Rules;
 
 namespace TcpServerEmulator.Core.Perpetuation
 {
@@ -17,12 +16,12 @@ namespace TcpServerEmulator.Core.Perpetuation
             this.pluginHolder = pluginHolder;
         }
 
-        /// <inheritdoc cref="ISave.SaveRules(string, RuleHolder)"/>
-        public void SaveRules(string destinationPath, RuleHolder ruleHolder)
+        /// <inheritdoc cref="ISave.SaveProject(string, Project.Project)"/>
+        public void SaveProject(string destinationPath, Project.Project project)
         {
             var serializer = new DataContractSerializer(
-                typeof(IRule[]),
-                pluginHolder.Plugins.Select(plugin => plugin.RuleType).Concat(new[] { typeof(IRule[]) }).ToArray());
+                typeof(Project.Project),
+                pluginHolder.Plugins.Select(plugin => plugin.RuleType).ToArray());
 
             var setting = new XmlWriterSettings
             {
@@ -30,7 +29,7 @@ namespace TcpServerEmulator.Core.Perpetuation
                 Indent = true
             };
             using var writer = XmlWriter.Create(destinationPath, setting);
-            serializer.WriteObject(writer, ruleHolder.Rules.ToArray());
+            serializer.WriteObject(writer, project);
             writer.Close();
         }
     }
