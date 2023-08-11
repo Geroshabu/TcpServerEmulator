@@ -31,6 +31,7 @@ namespace TcpServerEmulator
             containerRegistry.Register<ConnectCommand>();
             containerRegistry.Register<DisconnectCommand>();
             containerRegistry.Register<AddRuleCommand>();
+            containerRegistry.Register<OpenProjectCommand>();
             containerRegistry.Register<SaveAsNewFileCommand>();
             containerRegistry.RegisterSingleton<TcpServer>();
             containerRegistry.RegisterManySingleton<Logger.OnMemory.Logger>(

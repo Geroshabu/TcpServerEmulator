@@ -19,6 +19,9 @@ namespace TcpServerEmulator.MainWindow
         private readonly TcpServer server;
         private readonly Logger.OnMemory.Logger logger;
 
+        /// <summary>プロジェクトを開くコマンド</summary>
+        public ICommand OpenProjectCommand { get; }
+
         public ICommand SaveAsNewFileCommand { get; }
 
         public ICommand ConnectCommand { get; }
@@ -68,6 +71,7 @@ namespace TcpServerEmulator.MainWindow
             Logger.OnMemory.Logger logger,
             ConnectCommand connectCommand,
             DisconnectCommand disconnectCommand,
+            OpenProjectCommand openProjectCommand,
             SaveAsNewFileCommand saveAsNewFileCommand,
             AddRuleCommand addRuleCommand,
             IDialogService dialogService)
@@ -79,6 +83,7 @@ namespace TcpServerEmulator.MainWindow
             this.logger = logger;
             ConnectCommand = connectCommand;
             DisconnectCommand = disconnectCommand;
+            OpenProjectCommand = openProjectCommand;
             SaveAsNewFileCommand = saveAsNewFileCommand;
             AddRuleCommand = addRuleCommand;
 
