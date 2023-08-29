@@ -36,7 +36,7 @@ namespace TcpServerEmulator
             containerRegistry.RegisterManySingleton<Logger.OnMemory.Logger>(
                 typeof(Logger.OnMemory.Logger),
                 typeof(ILogger));
-            containerRegistry.RegisterMany<Perpetuator>(typeof(ISave));
+            containerRegistry.RegisterMany<Perpetuator>(typeof(ISave), typeof(ILoad));
 
             containerRegistry.RegisterDialog<EditRuleWindow.View, EditRuleWindow.ViewModel>(typeof(EditRuleWindow.View).FullName);
         }

@@ -7,7 +7,7 @@ namespace TcpServerEmulator.Core.Perpetuation
     /// <summary>
     /// データの永続化を行うクラス
     /// </summary>
-    public class Perpetuator : ISave
+    public class Perpetuator : ISave, ILoad
     {
         private readonly RulePluginHolder pluginHolder;
 
@@ -16,12 +16,29 @@ namespace TcpServerEmulator.Core.Perpetuation
             this.pluginHolder = pluginHolder;
         }
 
+        /// <inheritdoc cref="ILoad.LoadProject(string)"/>
+        public Project.Project LoadProject(string sourcePath)
+        {
+            var serializer = createSerializer();
+
+            using var reader = XmlReader.Create(sourcePath);
+            object? result = serializer.ReadObject(reader);
+            reader.Close();
+
+            if (result is Project.Project resultProject)
+            {
+                return resultProject;
+            }
+            else
+            {
+                throw new InvalidDataException($"{sourcePath} is not Project. (${result?.GetType()})");
+            }
+        }
+
         /// <inheritdoc cref="ISave.SaveProject(string, Project.Project)"/>
         public void SaveProject(string destinationPath, Project.Project project)
         {
-            var serializer = new DataContractSerializer(
-                typeof(Project.Project),
-                pluginHolder.Plugins.Select(plugin => plugin.RuleType).ToArray());
+            var serializer = createSerializer();
 
             var setting = new XmlWriterSettings
             {
@@ -31,6 +48,13 @@ namespace TcpServerEmulator.Core.Perpetuation
             using var writer = XmlWriter.Create(destinationPath, setting);
             serializer.WriteObject(writer, project);
             writer.Close();
+        }
+
+        private DataContractSerializer createSerializer()
+        {
+            return new DataContractSerializer(
+                typeof(Project.Project),
+                pluginHolder.Plugins.Select(plugin => plugin.RuleType).ToArray());
         }
     }
 }

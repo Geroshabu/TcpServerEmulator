@@ -254,6 +254,15 @@ namespace TcpServerEmulator.Rules.StoreValue
             InitialValuesText = source.InitialValuesText;
         }
 
+        [OnDeserializing]
+        private void onDeserializing(StreamingContext context)
+        {
+            setterReceiveDataText = string.Empty;
+            setterResponseDataText = string.Empty;
+            getterReceiveDataText = string.Empty;
+            getterResponseDataText = string.Empty;
+        }
+
         /// <inheritdoc cref="IRule.CanResponse(byte[])"/>
         public bool CanResponse(byte[] receivedData)
         {
