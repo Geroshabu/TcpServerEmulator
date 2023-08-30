@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Input;
 using Microsoft.Win32;
 using TcpServerEmulator.Core.Perpetuation;
@@ -15,8 +14,10 @@ namespace TcpServerEmulator.MainWindow.Commands
         private readonly ISave saver;
         private readonly ProjectHolder projectHolder;
 
+#pragma warning disable 0067 // 本コマンドは非活性制御をせず、本イベントを使用しない
         /// <inheritdoc cref="ICommand.CanExecuteChanged"/>
         public event EventHandler? CanExecuteChanged;
+#pragma warning restore 0067
 
         public SaveAsNewFileCommand(
             ISave saver,
@@ -29,13 +30,11 @@ namespace TcpServerEmulator.MainWindow.Commands
         }
 
         /// <inheritdoc cref="ICommand.CanExecute(object?)"/>
-        public bool CanExecute(object? parameter) => projectHolder.Current != null;
+        public bool CanExecute(object? parameter) => true;
 
         /// <inheritdoc cref="ICommand.Execute(object?)"/>
         public void Execute(object? parameter)
         {
-            Debug.Assert(projectHolder.Current != null);
-
             var dialog = new SaveFileDialog();
             dialog.Filter = "TcpServerEmulatorプロジェクトファイル|*.tse";
             if (dialog.ShowDialog() == true)

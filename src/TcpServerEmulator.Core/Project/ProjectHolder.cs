@@ -10,12 +10,12 @@
         /// </summary>
         public EventHandler<CurrentProjectChangedEventArgs>? CurrentProjectChanged;
 
-        private Project? project;
+        private Project project;
 
         /// <summary>
         /// 現在アプリに読み込まれているプロジェクト。
         /// </summary>
-        public Project? Current
+        public Project Current
         {
             get => project;
             set
@@ -31,6 +31,9 @@
             }
         }
 
-
+        public ProjectHolder()
+        {
+            project = new Project();
+        }
     }
 }

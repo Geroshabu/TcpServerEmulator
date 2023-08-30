@@ -78,7 +78,7 @@ namespace TcpServerEmulator.MainWindow
         {
             this.ruleGeneratorHolder = ruleGeneratorHolder;
             this.projectHolder = projectHolder;
-            projectHolder.Current = project = new Project();
+            project = projectHolder.Current;
             this.server = server;
             this.logger = logger;
             ConnectCommand = connectCommand;
