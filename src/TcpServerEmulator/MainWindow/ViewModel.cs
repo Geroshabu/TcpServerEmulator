@@ -66,7 +66,7 @@ namespace TcpServerEmulator.MainWindow
         public ViewModel(
             RulePluginHolder ruleGeneratorHolder,
             ProjectHolder projectHolder,
-            RuleHolder ruleHolder,
+            RuleCollection ruleCollection,
             TcpServer server,
             Logger.OnMemory.Logger logger,
             ConnectCommand connectCommand,
@@ -89,22 +89,22 @@ namespace TcpServerEmulator.MainWindow
 
             RulePlugins = new ObservableCollection<IRulePlugin>(ruleGeneratorHolder.Plugins);
             RuleItems = new ObservableCollection<RuleItemViewModel>(
-                ruleHolder.Rules.Select(rule => createViewModel(rule, ruleHolder, dialogService)));
+                ruleCollection.Select(rule => createViewModel(rule, ruleCollection, dialogService)));
             SelectedRulePlugin = RulePlugins.FirstOrDefault();
 
             this.ruleGeneratorHolder.Registered += handlePluginRegistered;
-            project.RuleHolder.RuleAdded += (_, e) => RuleItems.Add(createViewModel(e.NewRule, ruleHolder, dialogService));
-            project.RuleHolder.RuleReplaced += (_, e) => RuleItems[e.Index] = createViewModel(e.NewRule, ruleHolder, dialogService);
-            project.RuleHolder.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
+            project.RuleCollection.RuleAdded += (_, e) => RuleItems.Add(createViewModel(e.NewRule, ruleCollection, dialogService));
+            project.RuleCollection.RuleReplaced += (_, e) => RuleItems[e.Index] = createViewModel(e.NewRule, ruleCollection, dialogService);
+            project.RuleCollection.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
             this.logger.MessageAdded += (_, _) => RaisePropertyChanged(nameof(CommunicationHistory));
         }
 
-        private RuleItemViewModel createViewModel(IRule rule, RuleHolder ruleHolder, IDialogService dialogService)
+        private RuleItemViewModel createViewModel(IRule rule, RuleCollection ruleCollection, IDialogService dialogService)
         {
             return new RuleItemViewModel(
                 rule,
-                new EditRuleCommand(dialogService, ruleHolder, rule),
-                new RemoveRuleCommand(ruleHolder, rule));
+                new EditRuleCommand(dialogService, ruleCollection, rule),
+                new RemoveRuleCommand(ruleCollection, rule));
         }
 
         private void handlePluginRegistered(object? sender, RulePluginRegisteredEventArgs e)

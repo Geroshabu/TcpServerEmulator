@@ -10,7 +10,7 @@ namespace TcpServerEmulator.MainWindow.Commands
     /// </summary>
     internal class RemoveRuleCommand : ICommand
     {
-        private readonly RuleHolder ruleHolder;
+        private readonly RuleCollection ruleCollection;
         private readonly IRule targetRule;
 
 #pragma warning disable 0067 // 本コマンドは非活性制御をせず、本イベントを使用しない
@@ -19,10 +19,10 @@ namespace TcpServerEmulator.MainWindow.Commands
 #pragma warning restore 0067
 
         public RemoveRuleCommand(
-            RuleHolder ruleHolder,
+            RuleCollection ruleCollection,
             IRule targetRule)
         {
-            this.ruleHolder = ruleHolder;
+            this.ruleCollection = ruleCollection;
             this.targetRule = targetRule;
         }
 
@@ -32,7 +32,7 @@ namespace TcpServerEmulator.MainWindow.Commands
         /// <inheritdoc cref="ICommand.Execute(object?)"/>
         public void Execute(object? parameter)
         {
-            ruleHolder.RemoveRule(targetRule);
+            ruleCollection.RemoveRule(targetRule);
         }
     }
 }

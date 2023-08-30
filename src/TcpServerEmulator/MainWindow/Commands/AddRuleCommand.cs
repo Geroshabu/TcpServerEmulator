@@ -10,7 +10,7 @@ namespace TcpServerEmulator.MainWindow.Commands
     internal class AddRuleCommand : ICommand
     {
         private readonly IDialogService dialogService;
-        private readonly RuleHolder ruleHolder;
+        private readonly RuleCollection ruleCollection;
 
 #pragma warning disable 0067
         /// <inheritdoc cref="ICommand.CanExecuteChanged"/>
@@ -19,10 +19,10 @@ namespace TcpServerEmulator.MainWindow.Commands
 
         public AddRuleCommand(
             IDialogService dialogService,
-            RuleHolder ruleHolder)
+            RuleCollection ruleCollection)
         {
             this.dialogService = dialogService;
-            this.ruleHolder = ruleHolder;
+            this.ruleCollection = ruleCollection;
         }
 
         /// <inheritdoc cref="ICommand.CanExecute(object?)"/>
@@ -45,7 +45,7 @@ namespace TcpServerEmulator.MainWindow.Commands
                     if (result.Result == ButtonResult.OK &&
                         result.Parameters.TryGetValue(nameof(IRule), out IRule rule))
                     {
-                        ruleHolder.AddRule(rule);
+                        ruleCollection.AddRule(rule);
                     }
                 });
             }

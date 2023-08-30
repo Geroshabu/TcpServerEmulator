@@ -12,7 +12,7 @@ namespace TcpServerEmulator.MainWindow.Commands
     internal class EditRuleCommand : ICommand
     {
         private readonly IDialogService dialogService;
-        private readonly RuleHolder ruleHolder;
+        private readonly RuleCollection ruleCollection;
         private readonly IRule targetRule;
 
 #pragma warning disable 0067 // 本コマンドは非活性制御をせず、本イベントを使用しない
@@ -22,11 +22,11 @@ namespace TcpServerEmulator.MainWindow.Commands
 
         public EditRuleCommand(
             IDialogService dialogService,
-            RuleHolder ruleHolder,
+            RuleCollection ruleCollection,
             IRule targetRule)
         {
             this.dialogService = dialogService;
-            this.ruleHolder = ruleHolder;
+            this.ruleCollection = ruleCollection;
             this.targetRule = targetRule;
         }
 
@@ -46,7 +46,7 @@ namespace TcpServerEmulator.MainWindow.Commands
                 if (result.Result == ButtonResult.OK &&
                     result.Parameters.TryGetValue(nameof(IRule), out IRule rule))
                 {
-                    ruleHolder.ReplaceRule(targetRule, rule);
+                    ruleCollection.ReplaceRule(targetRule, rule);
                 }
             });
         }

@@ -9,6 +9,6 @@ namespace TcpServerEmulator.Core.Project
     public class Project
     {
         [DataMember]
-        public RuleHolder RuleHolder { get; private set; } = new();
+        public RuleCollection RuleCollection { get; private set; } = new();
     }
 }

@@ -1,10 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections;
+using System.Runtime.Serialization;
 using TcpServerEmulator.Rules;
 
 namespace TcpServerEmulator.Core
 {
     [DataContract]
-    public class RuleHolder
+    public class RuleCollection : IEnumerable<IRule>
     {
         [DataMember]
         private readonly List<IRule> rules = new();
@@ -17,9 +18,6 @@ namespace TcpServerEmulator.Core
 
         /// <summary>ルールが入れ替わったときに発生する</summary>
         public event EventHandler<RuleReplacedEventArgs>? RuleReplaced;
-
-        /// <summary>保持しているルール一覧</summary>
-        public IEnumerable<IRule> Rules => rules.AsReadOnly();
 
         public void AddRule(IRule rule)
         {
@@ -51,5 +49,9 @@ namespace TcpServerEmulator.Core
             rules[index] = newRule;
             RuleReplaced?.Invoke(this, new RuleReplacedEventArgs(index, oldRule, newRule));
         }
+
+        public IEnumerator<IRule> GetEnumerator() => rules.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => rules.GetEnumerator();
     }
 }

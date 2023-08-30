@@ -8,17 +8,17 @@ namespace TcpServerEmulator.Core
 {
     public class DataHandler
     {
-        private readonly RuleHolder ruleHolder;
+        private readonly RuleCollection ruleCollection;
 
         public DataHandler(
-            RuleHolder ruleHolder)
+            RuleCollection ruleCollection)
         {
-            this.ruleHolder = ruleHolder;
+            this.ruleCollection = ruleCollection;
         }
 
         public byte[] HandleData(byte[] data)
         {
-            var rule = ruleHolder.Rules.FirstOrDefault(rule => rule.CanResponse(data));
+            var rule = ruleCollection.FirstOrDefault(rule => rule.CanResponse(data));
             if (rule == null)
             {
                 return new byte[] { 0x0d, 0x0a };
