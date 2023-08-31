@@ -15,9 +15,9 @@ namespace TcpServerEmulator.MainWindow
     {
         private readonly RulePluginHolder ruleGeneratorHolder;
         private readonly ProjectHolder projectHolder;
-        private readonly Project project;
         private readonly TcpServer server;
         private readonly Logger.OnMemory.Logger logger;
+        private readonly IDialogService dialogService;
 
         /// <summary>プロジェクトを開くコマンド</summary>
         public ICommand OpenProjectCommand { get; }
@@ -77,25 +77,22 @@ namespace TcpServerEmulator.MainWindow
         {
             this.ruleGeneratorHolder = ruleGeneratorHolder;
             this.projectHolder = projectHolder;
-            project = projectHolder.Current;
             this.server = server;
             this.logger = logger;
+            this.dialogService = dialogService;
             ConnectCommand = connectCommand;
             DisconnectCommand = disconnectCommand;
             OpenProjectCommand = openProjectCommand;
             SaveAsNewFileCommand = saveAsNewFileCommand;
             AddRuleCommand = addRuleCommand;
-            var ruleCollection = project.RuleCollection;
 
             RulePlugins = new ObservableCollection<IRulePlugin>(ruleGeneratorHolder.Plugins);
-            RuleItems = new ObservableCollection<RuleItemViewModel>(
-                ruleCollection.Select(rule => createViewModel(rule, ruleCollection, dialogService)));
+            RuleItems = new ObservableCollection<RuleItemViewModel>();
             SelectedRulePlugin = RulePlugins.FirstOrDefault();
 
             this.ruleGeneratorHolder.Registered += handlePluginRegistered;
-            ruleCollection.RuleAdded += (_, e) => RuleItems.Add(createViewModel(e.NewRule, ruleCollection, dialogService));
-            ruleCollection.RuleReplaced += (_, e) => RuleItems[e.Index] = createViewModel(e.NewRule, ruleCollection, dialogService);
-            ruleCollection.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
+            this.projectHolder.CurrentProjectChanged += handleProjectChanged;
+            subscribeProjectEvents(projectHolder.Current);
             this.logger.MessageAdded += (_, _) => RaisePropertyChanged(nameof(CommunicationHistory));
         }
 
@@ -115,5 +112,45 @@ namespace TcpServerEmulator.MainWindow
                 SelectedRulePlugin = RulePlugins[0];
             }
         }
+
+        private void handleProjectChanged(object? sender, CurrentProjectChangedEventArgs e)
+        {
+            unsubscribeProjectEvents(e.OldProject);
+            resetRuleList(e.NewProject.RuleCollection);
+            subscribeProjectEvents(e.NewProject);
+        }
+
+        private void subscribeProjectEvents(Project project)
+        {
+            project.RuleCollection.RuleAdded += handleRuleAdded;
+            project.RuleCollection.RuleReplaced += handleRuleReplaced;
+            project.RuleCollection.RuleRemoved -= handleRuleRemoved;
+        }
+
+        private void unsubscribeProjectEvents(Project project)
+        {
+            project.RuleCollection.RuleAdded -= handleRuleAdded;
+            project.RuleCollection.RuleReplaced -= handleRuleReplaced;
+            project.RuleCollection.RuleRemoved -= handleRuleRemoved;
+        }
+
+        private void resetRuleList(RuleCollection rules)
+        {
+            SelectedRuleIndex = -1;
+            RuleItems.Clear();
+            foreach (var rule in rules)
+            {
+                RuleItems.Add(createViewModel(rule, rules, dialogService));
+            }
+        }
+
+        private void handleRuleAdded(object? sender, RuleAddedEventArgs e)
+            => RuleItems.Add(createViewModel(e.NewRule, projectHolder.Current.RuleCollection, dialogService));
+
+        private void handleRuleReplaced(object? sender, RuleReplacedEventArgs e)
+            => RuleItems[e.Index] = createViewModel(e.NewRule, projectHolder.Current.RuleCollection, dialogService);
+
+        private void handleRuleRemoved(object? sender, RuleRemovedEventArgs e)
+            => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
     }
 }
