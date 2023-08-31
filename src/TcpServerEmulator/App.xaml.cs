@@ -26,7 +26,6 @@ namespace TcpServerEmulator
             containerRegistry.RegisterManySingleton<RulePluginHolder>(
                 typeof(RulePluginHolder),
                 typeof(IRulePluginRegister));
-            containerRegistry.RegisterSingleton<RuleCollection>();
             containerRegistry.RegisterSingleton<ProjectHolder>();
             containerRegistry.Register<ConnectCommand>();
             containerRegistry.Register<DisconnectCommand>();

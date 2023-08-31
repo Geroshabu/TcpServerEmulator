@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TcpServerEmulator.Core.Project;
 
 namespace TcpServerEmulator.Core
 {
     public class DataHandler
     {
-        private readonly RuleCollection ruleCollection;
+        private readonly ProjectHolder projectHolder;
 
         public DataHandler(
-            RuleCollection ruleCollection)
+            ProjectHolder projectHolder)
         {
-            this.ruleCollection = ruleCollection;
+            this.projectHolder = projectHolder;
         }
 
         public byte[] HandleData(byte[] data)
         {
-            var rule = ruleCollection.FirstOrDefault(rule => rule.CanResponse(data));
+            var rule = projectHolder.Current.RuleCollection.FirstOrDefault(rule => rule.CanResponse(data));
             if (rule == null)
             {
                 return new byte[] { 0x0d, 0x0a };

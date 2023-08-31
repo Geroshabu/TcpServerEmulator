@@ -66,7 +66,6 @@ namespace TcpServerEmulator.MainWindow
         public ViewModel(
             RulePluginHolder ruleGeneratorHolder,
             ProjectHolder projectHolder,
-            RuleCollection ruleCollection,
             TcpServer server,
             Logger.OnMemory.Logger logger,
             ConnectCommand connectCommand,
@@ -86,6 +85,7 @@ namespace TcpServerEmulator.MainWindow
             OpenProjectCommand = openProjectCommand;
             SaveAsNewFileCommand = saveAsNewFileCommand;
             AddRuleCommand = addRuleCommand;
+            var ruleCollection = project.RuleCollection;
 
             RulePlugins = new ObservableCollection<IRulePlugin>(ruleGeneratorHolder.Plugins);
             RuleItems = new ObservableCollection<RuleItemViewModel>(
@@ -93,9 +93,9 @@ namespace TcpServerEmulator.MainWindow
             SelectedRulePlugin = RulePlugins.FirstOrDefault();
 
             this.ruleGeneratorHolder.Registered += handlePluginRegistered;
-            project.RuleCollection.RuleAdded += (_, e) => RuleItems.Add(createViewModel(e.NewRule, ruleCollection, dialogService));
-            project.RuleCollection.RuleReplaced += (_, e) => RuleItems[e.Index] = createViewModel(e.NewRule, ruleCollection, dialogService);
-            project.RuleCollection.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
+            ruleCollection.RuleAdded += (_, e) => RuleItems.Add(createViewModel(e.NewRule, ruleCollection, dialogService));
+            ruleCollection.RuleReplaced += (_, e) => RuleItems[e.Index] = createViewModel(e.NewRule, ruleCollection, dialogService);
+            ruleCollection.RuleRemoved += (_, e) => RuleItems.Remove(RuleItems.First(item => item.Rule == e.RemovedRule));
             this.logger.MessageAdded += (_, _) => RaisePropertyChanged(nameof(CommunicationHistory));
         }
 

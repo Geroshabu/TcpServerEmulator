@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Input;
 using Prism.Services.Dialogs;
-using TcpServerEmulator.Core;
+using TcpServerEmulator.Core.Project;
 using TcpServerEmulator.Rules;
 
 namespace TcpServerEmulator.MainWindow.Commands
 {
+    /// <summary>
+    /// ルールを追加するコマンド
+    /// </summary>
     internal class AddRuleCommand : ICommand
     {
         private readonly IDialogService dialogService;
-        private readonly RuleCollection ruleCollection;
+        private readonly ProjectHolder projectHolder;
 
 #pragma warning disable 0067
         /// <inheritdoc cref="ICommand.CanExecuteChanged"/>
@@ -19,10 +21,10 @@ namespace TcpServerEmulator.MainWindow.Commands
 
         public AddRuleCommand(
             IDialogService dialogService,
-            RuleCollection ruleCollection)
+            ProjectHolder projectHolder)
         {
             this.dialogService = dialogService;
-            this.ruleCollection = ruleCollection;
+            this.projectHolder = projectHolder;
         }
 
         /// <inheritdoc cref="ICommand.CanExecute(object?)"/>
@@ -45,7 +47,7 @@ namespace TcpServerEmulator.MainWindow.Commands
                     if (result.Result == ButtonResult.OK &&
                         result.Parameters.TryGetValue(nameof(IRule), out IRule rule))
                     {
-                        ruleCollection.AddRule(rule);
+                        projectHolder.Current.RuleCollection.AddRule(rule);
                     }
                 });
             }
