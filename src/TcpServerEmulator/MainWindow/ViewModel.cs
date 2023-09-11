@@ -30,10 +30,32 @@ namespace TcpServerEmulator.MainWindow
 
         public ICommand AddRuleCommand { get; }
 
-        public int Port
+        private PortNumber _port = new(0);
+        private PortNumber port
         {
-            get => server.Port;
-            set => server.Port = value;
+            get => _port;
+            set
+            {
+                _port = value;
+                server.Port = _port;
+            }
+        }
+
+        private string portText = string.Empty;
+        /// <summary>
+        /// 使用するポート番号
+        /// </summary>
+        public string Port
+        {
+            get => portText;
+            set
+            {
+                portText = value;
+                if (PortNumber.TryParse(portText, out var parsedValue))
+                {
+                    port = parsedValue;
+                }
+            }
         }
 
         /// <summary>

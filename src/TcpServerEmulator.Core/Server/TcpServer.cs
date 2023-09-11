@@ -19,7 +19,10 @@ namespace TcpServerEmulator.Core.Server
         private readonly ILogger dataLogger;
         private readonly DataHandler dataHandler;
 
-        public int Port { get; set; }
+        /// <summary>
+        /// 接続を待ち受けるポート番号
+        /// </summary>
+        public PortNumber Port { get; set; }
 
         [MemberNotNullWhen(true, nameof(listener), nameof(listenTask), nameof(cancelTokenSource))]
         public bool IsRunning
@@ -57,7 +60,7 @@ namespace TcpServerEmulator.Core.Server
                     throw new InvalidOperationException();
                 }
 
-                listener = new TcpListener(IPAddress.Any, Port);
+                listener = new TcpListener(IPAddress.Any, Port.Value);
                 cancelTokenSource = new CancellationTokenSource();
                 listenTask = listenAsync(cancelTokenSource.Token);
 
