@@ -22,7 +22,23 @@
                 <TextBox Text="{Binding Port}"
                          VerticalContentAlignment="Center"
                          Width="100"
-                         Margin="5"/>
+                         Margin="5">
+                    <Validation.ErrorTemplate>
+                        <ControlTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <AdornedElementPlaceholder x:Name="ValidationTarget"/>
+                                <TextBlock
+                                    Text="{Binding ElementName=ValidationTarget, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                                    Foreground="Red"
+                                    FontWeight="Bold"
+                                    VerticalAlignment="Center"
+                                    Margin="5"/>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Validation.ErrorTemplate>
+                </TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
                 <Button Content="接続"
                         Command="{Binding ConnectCommand}"
                         Width="80"

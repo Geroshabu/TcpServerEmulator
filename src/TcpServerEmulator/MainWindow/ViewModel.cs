@@ -1,5 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -11,7 +15,7 @@ using TcpServerEmulator.Rules;
 
 namespace TcpServerEmulator.MainWindow
 {
-    internal class ViewModel : BindableBase
+    internal class ViewModel : BindableBase, INotifyDataErrorInfo
     {
         private readonly RulePluginHolder ruleGeneratorHolder;
         private readonly ProjectHolder projectHolder;
@@ -41,6 +45,8 @@ namespace TcpServerEmulator.MainWindow
             }
         }
 
+        private ErrorsContainer<string> errorsContainer;
+
         private string portText = string.Empty;
         /// <summary>
         /// 使用するポート番号
@@ -54,6 +60,11 @@ namespace TcpServerEmulator.MainWindow
                 if (PortNumber.TryParse(portText, out var parsedValue))
                 {
                     port = parsedValue;
+                    errorsContainer.ClearErrors(nameof(Port));
+                }
+                else
+                {
+                    errorsContainer.SetErrors(() => Port, new[] { "0～65535の数値を入力してください。" });
                 }
             }
         }
@@ -85,6 +96,12 @@ namespace TcpServerEmulator.MainWindow
         /// <summary>やり取りの履歴</summary>
         public string CommunicationHistory => logger.JoinedMessage;
 
+        /// <inheritdoc cref="INotifyDataErrorInfo.ErrorsChanged"/>
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        /// <inheritdoc cref="INotifyDataErrorInfo.HasErrors"/>
+        public bool HasErrors => errorsContainer.HasErrors;
+
         public ViewModel(
             RulePluginHolder ruleGeneratorHolder,
             ProjectHolder projectHolder,
@@ -97,6 +114,8 @@ namespace TcpServerEmulator.MainWindow
             AddRuleCommand addRuleCommand,
             IDialogService dialogService)
         {
+            errorsContainer = new ErrorsContainer<string>(raiseErrorsChanged);
+
             this.ruleGeneratorHolder = ruleGeneratorHolder;
             this.projectHolder = projectHolder;
             this.server = server;
@@ -117,6 +136,9 @@ namespace TcpServerEmulator.MainWindow
             subscribeProjectEvents(projectHolder.Current);
             this.logger.MessageAdded += (_, _) => RaisePropertyChanged(nameof(CommunicationHistory));
         }
+
+        /// <inheritdoc cref="INotifyDataErrorInfo.GetErrors(string?)"/>
+        public IEnumerable GetErrors(string? propertyName) => errorsContainer.GetErrors(propertyName);
 
         private RuleItemViewModel createViewModel(IRule rule, RuleCollection ruleCollection, IDialogService dialogService)
         {
@@ -164,6 +186,11 @@ namespace TcpServerEmulator.MainWindow
             {
                 RuleItems.Add(createViewModel(rule, rules, dialogService));
             }
+        }
+
+        private void raiseErrorsChanged([CallerMemberName] string? propertyName = null)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
 
         private void handleRuleAdded(object? sender, RuleAddedEventArgs e)
