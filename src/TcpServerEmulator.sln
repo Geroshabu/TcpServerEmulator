@@ -15,7 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Logger", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Logger.OnMemory", "TcpServerEmulator.Logger.OnMemory\TcpServerEmulator.Logger.OnMemory.csproj", "{4FED6256-27DD-4B2B-95DB-F8E2BB67904D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerEmulator.Rules.StoreValue", "TcpServerEmulator.Rules.StoreValue\TcpServerEmulator.Rules.StoreValue.csproj", "{6697C999-0D12-4564-9ABF-8BEAEAE6B175}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerEmulator.Rules.StoreValue", "TcpServerEmulator.Rules.StoreValue\TcpServerEmulator.Rules.StoreValue.csproj", "{6697C999-0D12-4564-9ABF-8BEAEAE6B175}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerEmulator.UI.Common.Wpf", "TcpServerEmulator.UI.Common.Wpf\TcpServerEmulator.UI.Common.Wpf.csproj", "{8544CF47-6BA3-40CB-A244-9F30724321D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerEmulator.Validation", "TcpServerEmulator.Validation\TcpServerEmulator.Validation.csproj", "{2C7567B7-7A16-4C89-B972-A20F594DFBCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{6697C999-0D12-4564-9ABF-8BEAEAE6B175}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6697C999-0D12-4564-9ABF-8BEAEAE6B175}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6697C999-0D12-4564-9ABF-8BEAEAE6B175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8544CF47-6BA3-40CB-A244-9F30724321D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8544CF47-6BA3-40CB-A244-9F30724321D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8544CF47-6BA3-40CB-A244-9F30724321D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8544CF47-6BA3-40CB-A244-9F30724321D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C7567B7-7A16-4C89-B972-A20F594DFBCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C7567B7-7A16-4C89-B972-A20F594DFBCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C7567B7-7A16-4C89-B972-A20F594DFBCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C7567B7-7A16-4C89-B972-A20F594DFBCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
