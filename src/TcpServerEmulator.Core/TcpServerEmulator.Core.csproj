@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TcpServerEmulator.Logger\TcpServerEmulator.Logger.csproj" />
     <ProjectReference Include="..\TcpServerEmulator.Rules\TcpServerEmulator.Rules.csproj" />
+    <ProjectReference Include="..\TcpServerEmulator.Validation\TcpServerEmulator.Validation.csproj" />
   </ItemGroup>
 
 </Project>

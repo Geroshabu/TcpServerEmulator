@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using TcpServerEmulator.Validation;
 
 namespace TcpServerEmulator.Core.Server
 {
@@ -57,21 +58,20 @@ namespace TcpServerEmulator.Core.Server
         /// <inheritdoc cref="object.ToString"/>
         public override string ToString() => Value.ToString();
 
-        /// <summary>
-        /// 文字列を、<see cref="PortNumber"/>インスタンスに変換できるかを試みる
-        /// </summary>
-        /// <param name="text">変換したい文字列</param>
-        /// <param name="result">変換後のインスタンス</param>
-        /// <returns>変換が成功した場合は<c>true</c>、それ以外は<c>false</c></returns>
-        public static bool TryParse(string text, [NotNullWhen(true)] out PortNumber? result)
+        private class Factory : IValueFactory<PortNumber>
         {
-            result = null;
-            if (int.TryParse(text, out var number) && isInRange(number))
+            public bool TryParse(string text, [NotNullWhen(true)] out PortNumber? result)
             {
-                result = new PortNumber(number);
+                result = null;
+                if (int.TryParse(text, out var number) && isInRange(number))
+                {
+                    result = new PortNumber(number);
+                }
+                return result != null;
             }
-            return result != null;
         }
+
+        public static IValueFactory<PortNumber> GetFactory() => new Factory();
 
         private static bool isInRange(int number) => number >= 0 && number <= 65535;
     }
