@@ -49,14 +49,7 @@ namespace TcpServerEmulator.MainWindow
         public string Port
         {
             get => portText;
-            set
-            {
-
-                if (SetProperty(ref portText, value))
-                {
-                    _ = SetValidatedProperty(ref _port, value, PortNumber.GetFactory());
-                }
-            }
+            set => SetPropertyWithValidate(ref portText, value, ref _port, PortNumber.GetFactory());
         }
 
         /// <summary>
