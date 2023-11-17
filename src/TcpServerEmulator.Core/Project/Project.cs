@@ -21,7 +21,7 @@ namespace TcpServerEmulator.Core.Project
             get => PortNumber.Value.ToString();
             set
             {
-                if (PortNumber.GetFactory().TryParse(value, out var portNumber))
+                if (PortNumber.GetFactory().TryParse(value, out var portNumber, out _))
                 {
                     PortNumber = portNumber;
                 }

@@ -60,19 +60,40 @@ namespace TcpServerEmulator.Core.Server
 
         private class Factory : IValueFactory<PortNumber>
         {
-            public bool TryParse(string text, [NotNullWhen(true)] out PortNumber? result)
+            /// <inheritdoc cref="IValueFactory{T}.TryParse(string, out T?, out IValidationErrorInfo?)"/>
+            public bool TryParse(
+                string text,
+                [NotNullWhen(true)] out PortNumber? result,
+                [NotNullWhen(false)] out IValidationErrorInfo? validationErrorInfo)
             {
                 result = null;
-                if (int.TryParse(text, out var number) && isInRange(number))
+                validationErrorInfo = null;
+                
+                if (string.IsNullOrEmpty(text))
                 {
-                    result = new PortNumber(number);
+                    validationErrorInfo = new EmptyValidationErrorInfo();
+                    return false;
                 }
-                return result != null;
+                if (!text.All(char.IsNumber))
+                {
+                    validationErrorInfo = new DecimalValidationErrorInfo();
+                    return false;
+                }
+                if (!int.TryParse(text, out var number) || !isInRange(number))
+                {
+                    validationErrorInfo = new RangeValidationErrorInfo<int>(minimum, maximum);
+                    return false;
+                }
+                result = new PortNumber(number);
+                return true;
             }
         }
 
         public static IValueFactory<PortNumber> GetFactory() => new Factory();
 
-        private static bool isInRange(int number) => number >= 0 && number <= 65535;
+        private const int minimum = 0;
+        private const int maximum = 65535;
+
+        private static bool isInRange(int number) => number >= minimum && number <= maximum;
     }
 }

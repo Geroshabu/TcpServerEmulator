@@ -51,7 +51,7 @@ namespace TcpServerEmulator.UI.Common.Wpf
         {
             if (SetProperty(ref textStorage, text))
             {
-                if (valueFactory.TryParse(text, out var result))
+                if (valueFactory.TryParse(text, out var result, out var validationErrorInfo))
                 {
                     storage = result;
                     errorsContainer.ClearErrors(propertyName);
@@ -59,7 +59,7 @@ namespace TcpServerEmulator.UI.Common.Wpf
                 }
                 else
                 {
-                    errorsContainer.SetErrors(propertyName, new[] { "入力エラー" });
+                    errorsContainer.SetErrors(propertyName, new[] { validationErrorInfo.Message });
                     return false;
                 }
             }
