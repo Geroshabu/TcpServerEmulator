@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Prism.Mvvm;
 using TcpServerEmulator.Validation;
@@ -32,20 +33,20 @@ namespace TcpServerEmulator.UI.Common.Wpf
         /// ユーザが入力した文字列を指定されたフィールドに設定し、変更通知を行う。
         /// ただし、同じ文字列を保持していた場合は何もしない。
         /// また、文字列のバリデーションを行い、入力された値のインスタンスを生成し、
-        /// 指定されたフィールドに設定する。
+        /// 指定されたプロパティやフィールドに設定する。
         /// バリデーションでエラーがある場合は、インスタンスを生成せず、エラー通知を行う。
         /// </summary>
         /// <typeparam name="T">文字列から生成したいインスタンスの型</typeparam>
         /// <param name="textStorage">ユーザが入力した文字列を設定するフィールド</param>
         /// <param name="text">ユーザが入力した文字列</param>
-        /// <param name="storage">生成したインスタンスを設定するフィールド</param>
+        /// <param name="propertySelector">生成したインスタンスを設定する先を表すExpression</param>
         /// <param name="valueFactory">文字列から<typeparamref name="T"/>インスタンスを生成するファクトリ</param>
         /// <param name="propertyName">バリデーションでエラーがある場合に、エラー通知をするプロパティ名</param>
         /// <returns>インスタンスを設定したか否か</returns>
         protected virtual bool SetPropertyWithValidate<T>(
             ref string textStorage,
             string text,
-            ref T storage,
+            Expression<Func<T>> storageSelector,
             IValueFactory<T> valueFactory,
             [CallerMemberName] string? propertyName = null)
         {
@@ -53,7 +54,12 @@ namespace TcpServerEmulator.UI.Common.Wpf
             {
                 if (valueFactory.TryParse(text, out var result, out var validationErrorInfo))
                 {
-                    storage = result;
+                    // ラムダ式 input => this.○○ = input を作成
+                    var inputExpr = Expression.Parameter(typeof(T), "input");
+                    var assignExpr = Expression.Assign(storageSelector.Body, inputExpr);
+                    var assignLambdaExpr = Expression.Lambda<Action<T>>(assignExpr, inputExpr);
+
+                    assignLambdaExpr.Compile().Invoke(result);
                     errorsContainer.ClearErrors(propertyName);
                     return true;
                 }
