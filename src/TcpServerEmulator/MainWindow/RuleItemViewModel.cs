@@ -17,7 +17,7 @@ namespace TcpServerEmulator.MainWindow
         /// <summary>
         /// このルールの名前
         /// </summary>
-        public string Name => Rule.Name;
+        public RuleName Name => Rule.Name;
 
         /// <summary>
         /// このルールの説明文

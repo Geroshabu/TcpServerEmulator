@@ -24,7 +24,7 @@
         <StackPanel DockPanel.Dock="Top"
                     Orientation="Horizontal">
             <Label Content="名前:" Margin="5"/>
-            <TextBox Text="{Binding Name}"
+            <TextBox Text="{Binding NameText}"
                      VerticalContentAlignment="Center"
                      Width="500"
                      Margin="5"/>

@@ -15,7 +15,7 @@ namespace TcpServerEmulator.Rules.ReturnConstant
         /// <inheritdoc cref="IRule.Name"/>
         /// <inheritdoc cref="IEditableRule.Name"/>
         [DataMember]
-        public string Name { get; set; } = string.Empty;
+        public RuleName Name { get; set; } = RuleName.Default;
 
         private string receiveDataText = string.Empty;
         /// <summary>受け取るデータとしてユーザが入力した文字列</summary>

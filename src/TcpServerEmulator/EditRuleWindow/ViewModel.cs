@@ -7,10 +7,11 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using TcpServerEmulator.Rules;
+using TcpServerEmulator.UI.Common.Wpf;
 
 namespace TcpServerEmulator.EditRuleWindow
 {
-    internal class ViewModel : BindableBase, IDialogAware
+    internal class ViewModel : ValidatableBindableBase, IDialogAware
     {
         public IRegionManager RegionManager { get; }
 
@@ -44,10 +45,9 @@ namespace TcpServerEmulator.EditRuleWindow
         /// <inheritdoc cref="IDialogAware.Title"/>
         public string Title => "ルール編集";
 
-        /// <summary>ルールの名前</summary>
-        public string Name
+        private RuleName name
         {
-            get => model?.Name ?? string.Empty;
+            get => model?.Name ?? RuleName.Default;
             set
             {
                 if (HasModel)
@@ -55,6 +55,14 @@ namespace TcpServerEmulator.EditRuleWindow
                     model.Name = value;
                 }
             }
+        }
+
+        private string nameText = string.Empty;
+        /// <summary>ルールの名前</summary>
+        public string NameText
+        {
+            get => nameText;
+            set => SetPropertyWithValidate(ref nameText, value, () => name, RuleName.GetFactory());
         }
 
         private DelegateCommand? okCommand;

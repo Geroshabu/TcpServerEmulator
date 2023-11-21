@@ -16,7 +16,7 @@ namespace TcpServerEmulator.Rules.StoreValue
         /// <inheritdoc cref="IRule.Name"/>
         /// <inheritdoc cref="IEditableRule.Name"/>
         [DataMember]
-        public string Name { get; set; } = string.Empty;
+        public RuleName Name { get; set; } = RuleName.Default;
 
         private string setterReceiveDataText = string.Empty;
         /// <summary>設定コマンドで受け取るデータとしてユーザが入力した文字列</summary>

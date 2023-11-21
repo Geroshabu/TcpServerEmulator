@@ -13,7 +13,7 @@
         Guid Id { get; }
 
         /// <summary>ルールの名前</summary>
-        string Name { get; set; }
+        RuleName Name { get; set; }
 
         /// <summary>
         /// このルールが機能するのに必要な条件を満たしているか
