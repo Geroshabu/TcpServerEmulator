@@ -3,6 +3,7 @@ using System.Windows.Input;
 using Prism.Services.Dialogs;
 using TcpServerEmulator.Core.Project;
 using TcpServerEmulator.Rules;
+using TcpServerEmulator.UI.Common.Wpf;
 
 namespace TcpServerEmulator.MainWindow.Commands
 {
@@ -39,7 +40,8 @@ namespace TcpServerEmulator.MainWindow.Commands
 
                 var dialogParameters = new DialogParameters
                 {
-                    { nameof(IEditableRule), initialRule }
+                    { nameof(IEditableRule), initialRule },
+                    { nameof(RuleEditMode), RuleEditMode.Add }
                 };
 
                 dialogService.ShowDialog(typeof(EditRuleWindow.View).FullName, dialogParameters, result =>
