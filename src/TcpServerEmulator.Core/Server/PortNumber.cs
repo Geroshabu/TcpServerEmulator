@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 using TcpServerEmulator.Validation;
 
 namespace TcpServerEmulator.Core.Server
@@ -7,11 +8,13 @@ namespace TcpServerEmulator.Core.Server
     /// ポート番号を表すクラス
     /// </summary>
     // 等価判定が正しく行われなくなる可能性があるので継承を禁じる
+    [DataContract]
     public sealed class PortNumber : IEquatable<PortNumber>
     {
         /// <summary>
         /// ポート番号を表す整数
         /// </summary>
+        [DataMember]
         public int Value { get; }
 
         /// <summary>
@@ -89,6 +92,12 @@ namespace TcpServerEmulator.Core.Server
             }
         }
 
+        /// <summary>
+        /// <see cref="PortNumber"/>インスタンスを生成するためのファクトリオブジェクトを取得する。
+        /// </summary>
+        /// <returns>
+        ///   <see cref="PortNumber"/>インスタンスを生成するためのファクトリオブジェクト
+        /// </returns>
         public static IValueFactory<PortNumber> GetFactory() => new Factory();
 
         private const int minimum = 0;
