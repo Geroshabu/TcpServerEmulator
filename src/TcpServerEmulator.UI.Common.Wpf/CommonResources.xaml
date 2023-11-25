@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTemplate x:Key="TextBoxErrorTemplate">
+        <StackPanel Orientation="Horizontal">
+            <AdornedElementPlaceholder x:Name="ValidationTarget"/>
+            <TextBlock Text="{Binding ElementName=ValidationTarget, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                       Foreground="Red"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+        </StackPanel>
+    </ControlTemplate>
+</ResourceDictionary>
