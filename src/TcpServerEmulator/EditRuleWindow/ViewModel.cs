@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
@@ -80,8 +81,13 @@ namespace TcpServerEmulator.EditRuleWindow
             })
             .ObservesCanExecute(() => canExecuteOk));
 
-        private bool canExecuteOk => HasModel && model.IsValid;
+        private bool canExecuteOk => HasModel && model.IsValid && !HasErrors;
         private void handleIsValidChanged(object? sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(canExecuteOk));
+        }
+
+        private void handleErrorsChanged(object? sender, DataErrorsChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(canExecuteOk));
         }
@@ -105,6 +111,8 @@ namespace TcpServerEmulator.EditRuleWindow
         public ViewModel(IRegionManager regionManager)
         {
             RegionManager = regionManager.CreateRegionManager();
+
+            ErrorsChanged += handleErrorsChanged;
         }
 
         /// <inheritdoc cref="IDialogAware.CanCloseDialog"/>
