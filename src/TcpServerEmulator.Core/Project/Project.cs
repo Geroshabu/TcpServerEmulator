@@ -13,24 +13,8 @@ namespace TcpServerEmulator.Core.Project
         /// <summary>
         /// ポート番号
         /// </summary>
-        public PortNumber PortNumber { get; set; }
-
         [DataMember]
-        private string portNumberText
-        {
-            get => PortNumber.Value.ToString();
-            set
-            {
-                if (PortNumber.GetFactory().TryParse(value, out var portNumber, out _))
-                {
-                    PortNumber = portNumber;
-                }
-                else
-                {
-                    throw new SerializationException($"Text \"{value}\" is invalid for port number");
-                }
-            }
-        }
+        public PortNumber PortNumber { get; set; }
 
         /// <summary>
         /// ルール一覧

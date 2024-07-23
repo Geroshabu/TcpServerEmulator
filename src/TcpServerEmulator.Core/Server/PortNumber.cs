@@ -14,8 +14,25 @@ namespace TcpServerEmulator.Core.Server
         /// <summary>
         /// ポート番号を表す整数
         /// </summary>
-        [DataMember]
-        public int Value { get; }
+        public int Value { get; private set; }
+
+        // シリアライズ・デシリアライズ用プロパティ
+        [DataMember(IsRequired = true, Name = "Value")]
+        private string serializedValue
+        {
+            get => Value.ToString();
+            set
+            {
+                if (GetFactory().TryParse(value, out var portNumber, out _))
+                {
+                    Value = portNumber.Value;
+                }
+                else
+                {
+                    throw new SerializationException($"Text \"{value}\" is invalid for port number");
+                }
+            }
+        }
 
         /// <summary>
         /// ポート番号を指定して<see cref="PortNumber"/>インスタンスを生成する。
