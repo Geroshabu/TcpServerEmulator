@@ -13,12 +13,29 @@ namespace TcpServerEmulator.Rules
         /// <summary>
         /// ルールの名前を表す文字列
         /// </summary>
-        [DataMember]
-        public string Value { get; }
+        public string Value { get; private set; }
+
+        // シリアライズ・デシリアライズ用プロパティ
+        [DataMember(IsRequired = true, Name = "Value")]
+        private string serializedValue
+        {
+            get => Value;
+            set
+            {
+                if (GetFactory().TryParse(value, out _, out _))
+                {
+                    Value = value;
+                }
+                else
+                {
+                    throw new SerializationException($"Text \"{value}\" is invalid for rule name");
+                }
+            }
+        }
 
         /// <summary>
         /// ルール名の文字列を指定して<see cref="RuleName"/>インスタンスを生成する。
-        /// なお、指定した文字列に下記が含まれていた場合、取り除かたものがルール名となる。
+        /// なお、指定した文字列に下記が含まれていた場合、取り除かれたものがルール名となる。
         /// <list type="bullet">
         ///   <item><description>制御文字</description></item>
         ///   <item><description>先頭と末尾の空白文字</description></item>
